@@ -1,8 +1,11 @@
-#include <iostream>
-#include "Parser.hpp"
-
 #ifndef BINARY_OPERATION // include guard
 #define BINARY_OPERATION
+
+#include <iostream>
+#include "Parser.hpp"
+#include "Constants.hpp"
+
+using namespace C;
 
 namespace B
 {
@@ -10,17 +13,17 @@ namespace B
     class BinaryOperation
     {
     private:
+    public:
         T1 left;
         T2 sign;
         T3 right;
-
-    public:
         BinaryOperation(T1 left, T2 sign, T3 right);
+        ~BinaryOperation();
         void result();
-        auto add(int, int);
-        auto sub(int, int);
-        auto mul(int, int);
-        float div(int, int);
+        auto add(T1, T2);
+        auto sub(T1, T2);
+        auto mul(T1, T2);
+        auto div(T1, T2);
     };
 
     template <typename T1, typename T2, typename T3>
@@ -32,50 +35,56 @@ namespace B
     }
 
     template <typename T1, typename T2, typename T3>
+    BinaryOperation<T1, T2, T3>::~BinaryOperation()
+    {
+    }
+
+    template <typename T1, typename T2, typename T3>
     void BinaryOperation<T1, T2, T3>::result()
     {
         switch (sign)
         {
-        case '+':
+        case C::ADD:
             std::cout << BinaryOperation<T1, T2, T3>::add(left, right) << std::endl;
             break;
 
-        case '-':
+        case C::SUB:
             std::cout << BinaryOperation<T1, T2, T3>::sub(left, right) << std::endl;
             break;
 
-        case '*':
+        case C::MULT:
             std::cout << BinaryOperation<T1, T2, T3>::mul(left, right) << std::endl;
             break;
 
-        case '/':
+        case C::DIV:
             std::cout << BinaryOperation<T1, T2, T3>::div(left, right) << std::endl;
             break;
+
         default:
             break;
         }
     }
 
     template <typename T1, typename T2, typename T3>
-    auto BinaryOperation<T1, T2, T3>::add(int x, int y)
+    auto BinaryOperation<T1, T2, T3>::add(T1 x, T2 y)
     {
         return x + y;
     }
 
     template <typename T1, typename T2, typename T3>
-    auto BinaryOperation<T1, T2, T3>::sub(int x, int y)
+    auto BinaryOperation<T1, T2, T3>::sub(T1 x, T2 y)
     {
         return x - y;
     }
 
     template <typename T1, typename T2, typename T3>
-    auto BinaryOperation<T1, T2, T3>::mul(int x, int y)
+    auto BinaryOperation<T1, T2, T3>::mul(T1 x, T2 y)
     {
         return x * y;
     }
 
     template <typename T1, typename T2, typename T3>
-    float BinaryOperation<T1, T2, T3>::div(int x, int y)
+    auto BinaryOperation<T1, T2, T3>::div(T1 x, T2 y)
     {
         return float(x) / float(y);
     }
