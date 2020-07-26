@@ -9,8 +9,28 @@ using namespace C;
 
 namespace B
 {
+    template <typename...>
+    class BinaryOperation;
+
+    template <typename T>
+    class BinaryOperation<T>
+    {
+    private:
+        T left;
+        T sign;
+        T right; /* data */
+
+    public:
+        BinaryOperation();
+    };
+
+    template <typename T>
+    BinaryOperation<T>::BinaryOperation()
+    {
+    }
+
     template <typename T1, typename T2, typename T3>
-    class BinaryOperation
+    class BinaryOperation<T1, T2, T3>
     {
     private:
     public:

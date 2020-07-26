@@ -9,10 +9,11 @@
 #include "../include/Constants.hpp"
 #include "../include/Parser.hpp"
 #include "../include/Literal.hpp"
-#include "../include/BinaryOperation.hpp"
+// #include "../include/Tree.hpp"
+// #include "../include/BinaryOperation.hpp"
 
-using namespace B;
-using namespace L;
+// using namespace B;
+// using namespace L;
 using namespace P;
 
 int main(int argc, char *argv[])
@@ -38,9 +39,12 @@ int main(int argc, char *argv[])
 
 	// B::BinaryOperation<int, char, int> d(num1.value, '/', num2.value);
 	// d.result();
-
-	const std::string expression = "1 + 2";
-
+	//////////
+	const std::string expression = "(1 + 2) + (2 + 3)";
 	P::Parser<std::string> parser(expression);
-	parser.evaluateAst();
+	// parser.evaluateAst();
+
+	// const std::string expression2 = "(102 + 211)";
+	// P::Parser<std::string> parser2(expression2);
+	// parser2.evaluateAst();
 }
