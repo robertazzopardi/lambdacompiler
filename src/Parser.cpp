@@ -115,7 +115,7 @@ bool p::Parser::isBracket(const char &val)
 
 void p::Parser::calculate(std::vector<std::string> tokens, tr::Tree *tree)
 {
-    if (std::find(tokens.begin(), tokens.end(), c::LB) == tokens.end() && std::find(tokens.begin(), tokens.end(), c::RB) == tokens.end())
+    if (std::find(tokens.begin(), tokens.end(), "(") == tokens.end() && std::find(tokens.begin(), tokens.end(), ")") == tokens.end())
     {
         auto count = tokens.size() - std::count_if(tokens.begin(), tokens.end(), [](auto a) { return isInteger(a); });
         int j = 0;
@@ -138,15 +138,7 @@ void p::Parser::calculate(std::vector<std::string> tokens, tr::Tree *tree)
     }
     else
     {
-        // std::cout << std::count_if(tokens.begin(), tokens.end(), [](auto a) { return isBracket(*a.c_str()); });
-
-        for (const std::string &&i : tokens)
-        {
-            if (isBracket(*i.c_str()))
-            {
-                std::cout << i << " ";
-            }
-        }
+        std::cout << std::count_if(tokens.begin(), tokens.end(), [](auto a) { return isBracket(*a.c_str()); });
 
         // for (auto &&tokens[i] : tokens)
         // for (size_t i = 0; i < tokens.size(); i++)
