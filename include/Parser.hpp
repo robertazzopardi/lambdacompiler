@@ -16,7 +16,7 @@ namespace p
         void calculate(std::vector<std::string> line, tr::Tree *tree);
         std::vector<std::string> removeDupWord(std::string str);
         static bool isInteger(const std::string &s);
-        static bool charIn(const char &val);
+        static bool isSign(const char &val);
         static bool isBracket(const char &val);
         std::string trim(const std::string &str);
     };

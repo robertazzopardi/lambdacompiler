@@ -103,7 +103,7 @@ bool p::Parser::isInteger(const std::string &s)
     return (*p == 0);
 }
 
-bool p::Parser::charIn(const char &val)
+bool p::Parser::isSign(const char &val)
 {
     return find(c::SIGNS.begin(), c::SIGNS.end(), val) != c::SIGNS.end();
 }
@@ -138,7 +138,12 @@ void p::Parser::calculate(std::vector<std::string> tokens, tr::Tree *tree)
     }
     else
     {
-        std::cout << std::count_if(tokens.begin(), tokens.end(), [](auto a) { return isBracket(*a.c_str()); });
+        std::cout << std::count_if(tokens.begin(), tokens.end(), [](auto a) { return isSign(*a.c_str()); });
+        // int d
+        // for (size_t i = 0; i < count; i++)
+        // {
+        //     /* code */
+        // }
 
         // for (auto &&tokens[i] : tokens)
         // for (size_t i = 0; i < tokens.size(); i++)
