@@ -1,7 +1,7 @@
 #ifndef LITERAL // include guard
 #define LITERAL
 
-namespace L
+namespace l
 {
     template <typename T>
     class Literal
@@ -17,6 +17,6 @@ namespace L
     {
         Literal<T>::value = value;
     }
-} // namespace L
+} // namespace l
 
 #endif

@@ -5,9 +5,7 @@
 #include "Parser.hpp"
 #include "Constants.hpp"
 
-using namespace C;
-
-namespace B
+namespace b
 {
     template <typename...>
     class BinaryOperation;
@@ -108,6 +106,6 @@ namespace B
     {
         return float(x) / float(y);
     }
-} // namespace B
+} // namespace b
 
 #endif

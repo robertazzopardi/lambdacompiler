@@ -3,7 +3,7 @@
 
 #include <vector>
 
-namespace C
+namespace c
 {
     static const std::vector<char> SIGNS{'+', '-', '*', '/'};
     const char ADD = '+';
@@ -12,7 +12,6 @@ namespace C
     const char DIV = '/';
     const char LB = '(';
     const char RB = ')';
-
-} // namespace C
+} // namespace c
 
 #endif

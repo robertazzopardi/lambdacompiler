@@ -7,19 +7,17 @@
 
 #include "../include/Parser.hpp"
 #include "../include/Constants.hpp"
+#include "../include/Tree.hpp"
 
-using namespace P;
-using namespace C;
-
-Parser::Parser()
+p::Parser::Parser()
 {
 }
 
-void Parser::parseLine(std::string line)
+void p::Parser::parseLine(std::string line)
 {
     std::vector<std::string> words = removeDupWord(line);
 
-    class Tree *tree = new Tree();
+    class tr::Tree *tree = new tr::Tree();
     calculate(words, tree);
 
     tree->printPreorder(tree->curr);
@@ -37,7 +35,7 @@ std::string trim(const std::string &str)
     return str.substr(first, (last - first + 1));
 }
 
-std::vector<std::string> Parser::removeDupWord(std::string str)
+std::vector<std::string> p::Parser::removeDupWord(std::string str)
 {
     // Used to split string around spaces.
     std::istringstream ss(str);
@@ -94,7 +92,7 @@ std::vector<std::string> Parser::removeDupWord(std::string str)
     return split;
 }
 
-bool Parser::isInteger(const std::string &s)
+bool p::Parser::isInteger(const std::string &s)
 {
     if (s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+')))
         return false;
@@ -105,14 +103,19 @@ bool Parser::isInteger(const std::string &s)
     return (*p == 0);
 }
 
-bool Parser::charIn(const char &val)
+bool p::Parser::charIn(const char &val)
 {
-    return find(C::SIGNS.begin(), C::SIGNS.end(), val) != C::SIGNS.end();
+    return find(c::SIGNS.begin(), c::SIGNS.end(), val) != c::SIGNS.end();
 }
 
-void Parser::calculate(std::vector<std::string> tokens, Tree *tree)
+bool p::Parser::isBracket(const char &val)
 {
-    if (std::find(tokens.begin(), tokens.end(), "(") == tokens.end() && std::find(tokens.begin(), tokens.end(), ")") == tokens.end())
+    return c::LB == val;
+}
+
+void p::Parser::calculate(std::vector<std::string> tokens, tr::Tree *tree)
+{
+    if (std::find(tokens.begin(), tokens.end(), c::LB) == tokens.end() && std::find(tokens.begin(), tokens.end(), c::RB) == tokens.end())
     {
         auto count = tokens.size() - std::count_if(tokens.begin(), tokens.end(), [](auto a) { return isInteger(a); });
         int j = 0;
@@ -135,62 +138,60 @@ void Parser::calculate(std::vector<std::string> tokens, Tree *tree)
     }
     else
     {
-        // for (auto &&tokens[i] : tokens)
-        for (size_t i = 0; i < tokens.size(); i++)
+        // std::cout << std::count_if(tokens.begin(), tokens.end(), [](auto a) { return isBracket(*a.c_str()); });
 
+        for (const std::string &&i : tokens)
         {
-            // std::cout << i << " " << tokens.size() << std::endl;
-            // std::cout << tokens[i] << std::endl;
-            if (tokens[i] == "(")
+            if (isBracket(*i.c_str()))
             {
-                tree->createLeft();
-                tree->moveLeft();
-            }
-            else if (charIn(*tokens[i].c_str()))
-            {
-                tree->setValue(tokens[i]);
-                tree->createRight();
-                tree->moveRight();
-            }
-            else if (isInteger(tokens[i]))
-            {
-                if (tree->curr->parent == nullptr)
-                {
-                    tree->cmsrLeft(tokens[i]);
-                }
-
-                else if (tree->curr->left == nullptr)
-                {
-                    // && !tree->curr->parent->data.empty()
-                    tree->cmsrLeft(tokens[i]);
-                }
-
-                else if (tree->curr->parent->data.empty())
-                {
-
-                    tree->setValue(tokens[i]);
-                    tree->moveAbove();
-                }
-                else
-                {
-                    // std::cout << "fedf" << std::endl;
-                }
-            }
-            else if (tokens[i] == ")")
-            {
-                // std::cout << i << " " << tokens.size() << std::endl;
-                // if (i != tokens.size() - 1)
-                // {
-                //     std::cout << "fds" << std::endl;
-                while (tree->curr->parent != nullptr)
-                {
-                    tree->moveAbove();
-                }
-                // }
-                // else {
-                //     tree->moveAbove
-                // }
+                std::cout << i << " ";
             }
         }
+
+        // for (auto &&tokens[i] : tokens)
+        // for (size_t i = 0; i < tokens.size(); i++)
+
+        // {
+        //     // std::cout << i << " " << tokens.size() << std::endl;
+        //     // std::cout << tokens[i] << std::endl;
+        //     if (tokens[i] == "(")
+        //     {
+        //         tree->createLeft();
+        //         tree->moveLeft();
+        //     }
+        //     else if (charIn(*tokens[i].c_str()))
+        //     {
+        //         tree->setValue(tokens[i]);
+        //         tree->createRight();
+        //         tree->moveRight();
+        //     }
+        //     else if (isInteger(tokens[i]))
+        //     {
+        //         if (i > 0 && isInteger(tree->curr->parent->left->data) && charIn(*tree->curr->parent->data.c_str()))
+        //         {
+        //             // std::cout << tokens[i] << std::endl;
+        //             // tree->setValue(tokens[i]);
+        //             tree->cmsrLeft(tokens[i]);
+        //         }
+
+        //         else if (i > 0 && tree->curr->parent->data.empty() && tree->curr->parent == nullptr)
+        //         {
+        //             tree->setValue(tokens[i]);
+        //             tree->moveAbove();
+        //         }
+        //         else
+        //         {
+        //             tree->cmsrLeft(tokens[i]);
+        //         }
+
+        //     }
+        //     else if (tokens[i] == ")")
+        //     {
+        //         while (tree->curr->parent != nullptr)
+        //         {
+        //             tree->moveAbove();
+        //         }
+        //     }
+        // }
     }
 }

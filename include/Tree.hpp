@@ -1,10 +1,9 @@
 #ifndef TREE // include guard
 #define TREE
 
-#include <string>
 #include <vector>
 
-namespace Tr
+namespace tr
 {
     class Node
     {
@@ -34,6 +33,6 @@ namespace Tr
         void printPostorder(class Node *node);
         void printInorder(class Node *node);
     };
-} // namespace Tr
+} // namespace tr
 
 #endif

@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 
-namespace F
+namespace f
 {
     class FileHandler
     {
@@ -19,6 +19,6 @@ namespace F
         std::vector<std::string> readFile();
         void writeFile(std::string);
     }; // class FileHandler
-} // namespace F
+} // namespace f
 
 #endif

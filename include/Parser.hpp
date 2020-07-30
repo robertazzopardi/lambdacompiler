@@ -3,9 +3,7 @@
 
 #include "Tree.hpp"
 
-using namespace Tr;
-
-namespace P
+namespace p
 {
     class Parser
     {
@@ -15,12 +13,13 @@ namespace P
     public:
         Parser();
         void parseLine(std::string line);
-        void calculate(std::vector<std::string> line, Tree *tree);
+        void calculate(std::vector<std::string> line, tr::Tree *tree);
         std::vector<std::string> removeDupWord(std::string str);
         static bool isInteger(const std::string &s);
         static bool charIn(const char &val);
+        static bool isBracket(const char &val);
         std::string trim(const std::string &str);
     };
-} // namespace P
+} // namespace p
 
 #endif

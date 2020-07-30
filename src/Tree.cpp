@@ -2,32 +2,30 @@
 
 #include "../include/Tree.hpp"
 
-using namespace Tr;
-
-Node::Node()
+tr::Node::Node()
 {
     left = right = parent = nullptr;
 }
 
-Tree::Tree()
+tr::Tree::Tree()
 {
     root = new Node();
     curr = root;
 }
 
-void Tree::createLeft()
+void tr::Tree::createLeft()
 {
     curr->left = new Node();
 }
 
-void Tree::moveLeft()
+void tr::Tree::moveLeft()
 {
     Node *temp = curr;
     curr = curr->left;
     curr->parent = temp;
 }
 
-void Tree::cmsrLeft(std::string data)
+void tr::Tree::cmsrLeft(std::string data)
 {
     curr->left = new Node();
 
@@ -40,7 +38,7 @@ void Tree::cmsrLeft(std::string data)
     curr = curr->parent;
 }
 
-void Tree::cmsrRight(std::string data)
+void tr::Tree::cmsrRight(std::string data)
 {
     curr->right = new Node();
 
@@ -53,29 +51,29 @@ void Tree::cmsrRight(std::string data)
     curr = curr->parent;
 }
 
-void Tree::createRight()
+void tr::Tree::createRight()
 {
     curr->right = new Node();
 }
 
-void Tree::moveRight()
+void tr::Tree::moveRight()
 {
     Node *temp = curr;
     curr = curr->right;
     curr->parent = temp;
 }
 
-void Tree::setValue(std::string data)
+void tr::Tree::setValue(std::string data)
 {
     curr->data = data;
 }
 
-void Tree::moveAbove()
+void tr::Tree::moveAbove()
 {
     curr = curr->parent;
 }
 
-void Tree::printPreorder(class Node *node)
+void tr::Tree::printPreorder(class Node *node)
 {
     if (node == nullptr)
         return;
@@ -90,7 +88,7 @@ void Tree::printPreorder(class Node *node)
     printPreorder(node->right);
 }
 
-void Tree::printPostorder(class Node *node)
+void tr::Tree::printPostorder(class Node *node)
 {
     if (node == nullptr)
         return;
@@ -106,7 +104,7 @@ void Tree::printPostorder(class Node *node)
 }
 
 /* Given a binary tree, print its nodes in inorder*/
-void Tree::printInorder(class Node *node)
+void tr::Tree::printInorder(class Node *node)
 {
     if (node == nullptr)
         return;

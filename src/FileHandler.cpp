@@ -2,18 +2,16 @@
 #include <fstream>
 #include "../include/FileHandler.hpp"
 
-using namespace F;
-
-FileHandler::FileHandler(std::string path)
+f::FileHandler::FileHandler(std::string path)
 {
     FileHandler::filePath = path;
 }
 
-FileHandler::~FileHandler()
+f::FileHandler::~FileHandler()
 {
 }
 
-std::vector<std::string> FileHandler::readFile()
+std::vector<std::string> f::FileHandler::readFile()
 {
     std::vector<std::string> lines;
     std::ifstream file(FileHandler::filePath);
@@ -25,6 +23,6 @@ std::vector<std::string> FileHandler::readFile()
     return lines;
 }
 
-void FileHandler::writeFile(std::string path)
+void f::FileHandler::writeFile(std::string path)
 {
 }
