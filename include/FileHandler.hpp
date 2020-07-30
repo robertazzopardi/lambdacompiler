@@ -2,6 +2,9 @@
 #ifndef FILE_HANDLER // include guard
 #define FILE_HANDLER
 
+#include <vector>
+#include <string>
+
 namespace F
 {
     class FileHandler
@@ -13,9 +16,8 @@ namespace F
     public:
         FileHandler(std::string);
         ~FileHandler();
-        void readFile();
+        std::vector<std::string> readFile();
         void writeFile(std::string);
-        std::string contents;
     }; // class FileHandler
 } // namespace F
 

@@ -13,14 +13,16 @@ FileHandler::~FileHandler()
 {
 }
 
-void FileHandler::readFile()
+std::vector<std::string> FileHandler::readFile()
 {
+    std::vector<std::string> lines;
     std::ifstream file(FileHandler::filePath);
     std::string line;
     while (std::getline(file, line))
     {
-        FileHandler::contents.append(line).append("\n");
+        lines.push_back(line);
     }
+    return lines;
 }
 
 void FileHandler::writeFile(std::string path)
