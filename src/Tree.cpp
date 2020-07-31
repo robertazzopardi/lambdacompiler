@@ -114,10 +114,11 @@ void tr::Tree::postOrderSet(class Node *node, std::string val)
     // then recur on right subtree
     Tree::postOrderSet(node->right, val);
 
+    std::cout << node->data << " ";
     if (node->data.empty())
     {
         // std::cout << val << " ";
-        node->data = val;
+        // node->data = val;
         return;
     }
 }
