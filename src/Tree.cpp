@@ -103,6 +103,25 @@ void tr::Tree::printPostorder(class Node *node)
     std::cout << node->data << " ";
 }
 
+void tr::Tree::postOrderSet(class Node *node, std::string val)
+{
+    if (node == nullptr)
+        return;
+
+    // first recur on left subtree
+    Tree::postOrderSet(node->left, val);
+
+    // then recur on right subtree
+    Tree::postOrderSet(node->right, val);
+
+    if (node->data.empty())
+    {
+        // std::cout << val << " ";
+        node->data = val;
+        return;
+    }
+}
+
 /* Given a binary tree, print its nodes in inorder*/
 void tr::Tree::printInorder(class Node *node)
 {
