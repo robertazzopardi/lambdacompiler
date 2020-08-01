@@ -140,53 +140,151 @@ void p::Parser::calculate(std::vector<std::string> tokens, tr::Tree *tree)
     }
     else
     {
+        std::vector<std::string> nums;
+        std::vector<std::string>::iterator iter1 = tokens.begin();
+        while ((iter1 = std::find_if(iter1, tokens.end(), [](auto a) { return isInteger(a); })) != tokens.end())
+        {
+            std::cout << *iter1;
+
+            // tree->setNumbers(tree->curr, *iter1);
+
+            // iter1++;
+            nums.push_back(*iter1++);
+        }
+
+        // tree->setNumbers(tree->curr, nums);
+
+        while (tree->curr->parent != nullptr)
+        {
+            tree->moveAbove();
+        }
+        std::cout << " ";
+        // /////////////////////////////////////////////////////////////////////////////////////////
         // std::cout << std::count_if(tokens.begin(), tokens.end(), [](auto a) { return isSign(*a.c_str()); });
         int depth = std::count_if(tokens.begin(), tokens.end(), [](auto a) { return isSign(*a.c_str()); });
         // std::cout << depth << std::endl;
         std::vector<std::string>::iterator iter = tokens.begin();
+        int i = 0;
+        int numOfSigns = 0;
+        bool isRight = false;
         while ((iter = std::find_if(iter, tokens.end(), [](auto a) { return isSign(*a.c_str()) || isBracket(*a.c_str()); })) != tokens.end())
         {
             // Do something with iter
             // std::cout << (*iter);
-
+            int index = iter - tokens.begin();
+            std::cout << i;
             if (*iter == "(")
             {
-                if (tree->curr->left == nullptr && tree->curr->right == nullptr)
+                if (isRight && tree->curr->left == nullptr && tree->curr->right == nullptr)
                 {
                     tree->createLeft();
+                    tree->moveLeft();
+                    isRight = false;
+                }
+                else if (tree->curr->left == nullptr && tree->curr->right == nullptr)
+                { //left bracket
+                    tree->createLeft();
+
+                    tree->curr->left->data = nums[i++];
                     tree->createRight();
+                    tree->curr->right->data = nums[i++];
+                    // i--;
+                }
+                else if (tree->curr->right != nullptr && isInteger(tree->curr->right->data))
+                {
+                    // std::cout << "endl";
+                    tree->moveRight();
+                    if (tree->curr->left == nullptr)
+                    {
+                        tree->createLeft();
+                        tree->curr->left->data = tree->curr->data;
+                        tree->curr->data = "";
+                    }
                 }
                 else
-                {
+                { //shift
                     tree->moveRight();
+                    tree->createLeft();
                 }
             }
             else if (*iter == ")")
-            {
+            { //right bracket
                 if (tree->curr->parent == nullptr)
                 {
                     tree->curr->parent = new tr::Node();
                     tree->curr->parent->left = tree->curr;
                     tree->moveAbove();
                 }
+                else if (tree->curr->data.empty() && tree->curr->right != nullptr && tree->curr->right->data.empty())
+                {
+                    //nothing
+                }
+                else if (tree->curr->data.empty())
+                {
+                    tree->setValue(nums[i++]);
+                }
+                else if (tree->curr->parent != nullptr && tree->curr->parent->data.empty())
+                {
+                    tree->moveAbove();
+                }
+
+                // else if (tree->curr->right != nullptr && isSign(*tree->curr->data.c_str()) && tree->curr->parent != nullptr && tree->curr->parent->left != nullptr)
+                // {
+                //     class tr::Node *tmp = new tr::Node();
+                //     tmp->left = tree->curr;
+
+                //     tree->curr = tmp;
+                // }
+                else if (tree->curr->right != nullptr)
+                {
+
+                    tree->moveRight();
+                }
             }
             else
-            {
-                if (tree->curr->left != nullptr && tree->curr->right != nullptr)
+            { //sign
+                //value is set
+                if (tree->curr->left != nullptr && tree->curr->right != nullptr && tree->curr->left->data.empty() && tree->curr->right->data.empty())
+                {
+
+                    class tr::Node *tmp = new tr::Node();
+                    tmp->data = *iter;
+                    tmp->left = new tr::Node();
+                    tmp->left->data = nums[i++];
+                    tmp->right = new tr::Node();
+                    tmp->right->data = nums[i++];
+
+                    tree->curr->left = tmp;
+                }
+                else if (tree->curr->left != nullptr && tree->curr->right != nullptr && !tree->curr->left->data.empty() && !tree->curr->right->data.empty())
                 {
                     tree->setValue(*iter);
+                }
+                else if (tree->curr->left != nullptr && tree->curr->right != nullptr && !tree->curr->left->data.empty() && tree->curr->right->data.empty())
+                {
+                    tree->setValue(*iter);
+                    tree->moveRight();
                 }
                 else if (tree->curr->left == nullptr && tree->curr->right == nullptr)
                 {
                     tree->setValue(*iter);
                     tree->createLeft();
+                    tree->curr->left->data = nums[i++];
                     tree->createRight();
+                    tree->curr->right->data = nums[i++];
+                    // i--;
                 }
-                else if (tree->curr->right == nullptr)
+                else if (tree->curr->right == nullptr && tree->curr->left != nullptr)
                 {
+                    // std::cout << "ds";
+
                     tree->setValue(*iter);
+
                     tree->createRight();
+                    // tree->curr->right->data = nums[i++];
                     tree->moveRight();
+                    isRight = true;
+                    // i--;
                 }
                 else
                 {
@@ -203,21 +301,26 @@ void p::Parser::calculate(std::vector<std::string> tokens, tr::Tree *tree)
             tree->moveAbove();
         }
 
-        std::vector<std::string>::iterator iter1 = tokens.begin();
-        while ((iter1 = std::find_if(iter1, tokens.end(), [](auto a) { return isInteger(a); })) != tokens.end())
-        {
-            // std::cout << *iter1;
+        // std::vector<std::string> nums;
+        // std::vector<std::string>::iterator iter1 = tokens.begin();
+        // while ((iter1 = std::find_if(iter1, tokens.end(), [](auto a) { return isInteger(a); })) != tokens.end())
+        // {
+        //     std::cout << *iter1;
 
-            tree->postOrderSet(tree->curr, *iter1);
+        //     // tree->setNumbers(tree->curr, *iter1);
 
-            iter1++;
-        }
+        //     iter1++;
+        //     // nums.push_back(*iter1++);
+        // }
 
-        while (tree->curr->parent != nullptr)
-        {
-            tree->moveAbove();
-        }
+        // // tree->setNumbers(tree->curr, nums);
+
+        // while (tree->curr->parent != nullptr)
+        // {
+        //     tree->moveAbove();
+        // }
         std::cout << "    ";
+
         //iterator
         // for (auto &&tokens[i] : tokens)
         // for (size_t i = 0; i < tokens.size(); i++)
@@ -258,10 +361,10 @@ void p::Parser::calculate(std::vector<std::string> tokens, tr::Tree *tree)
         //     }
         //     else if (tokens[i] == ")")
         //     {
-        while (tree->curr->parent != nullptr)
-        {
-            tree->moveAbove();
-        }
+        // while (tree->curr->parent != nullptr)
+        // {
+        //     tree->moveAbove();
+        // }
         //     }
         // }
     }

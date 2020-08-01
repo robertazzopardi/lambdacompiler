@@ -32,7 +32,7 @@ namespace tr
         void printPreorder(class Node *node);
         void printPostorder(class Node *node);
         void printInorder(class Node *node);
-        void postOrderSet(class Node *node, std::string val);
+        void setNumbers(class Node *node, std::string val);
     };
 } // namespace tr
 
