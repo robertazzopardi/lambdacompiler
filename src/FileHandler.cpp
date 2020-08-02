@@ -1,5 +1,6 @@
 #include <string>
 #include <fstream>
+#include <iostream>
 #include "../include/FileHandler.hpp"
 
 f::FileHandler::FileHandler(std::string path)
@@ -18,7 +19,10 @@ std::vector<std::string> f::FileHandler::readFile()
     std::string line;
     while (std::getline(file, line))
     {
-        lines.push_back(line);
+        if (line.find("//") == std::string::npos)
+        {
+            lines.push_back(line);
+        }
     }
     return lines;
 }

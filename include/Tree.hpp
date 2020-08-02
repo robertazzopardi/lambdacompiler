@@ -33,6 +33,9 @@ namespace tr
         void printPostorder(class Node *node);
         void printInorder(class Node *node);
         void setNumbers(class Node *node, std::string val);
+        tr::Node *rightRotation(class Node *node);
+        void leftRotation(class Node *node);
+        tr::Node *createExpressionTree(std::vector<std::string> prefixExpression);
     };
 } // namespace tr
 

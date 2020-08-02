@@ -3,6 +3,9 @@
 
 #include "Tree.hpp"
 
+#include <vector>
+#include <deque>
+
 namespace p
 {
     class Parser
@@ -16,8 +19,12 @@ namespace p
         void calculate(std::vector<std::string> line, tr::Tree *tree);
         std::vector<std::string> removeDupWord(std::string str);
         static bool isInteger(const std::string &s);
-        static bool isSign(const char &val);
+        static bool isOperator(std::string val);
         static bool isBracket(const char &val);
+
+        static bool isLeftBracket(const char &val);
+        static bool isRightBracket(const char &val);
+        std::string pop(std::vector<std::string> vec);
         std::string trim(const std::string &str);
     };
 } // namespace p

@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "../include/Tree.hpp"
+#include "../include/Parser.hpp"
 
 tr::Node::Node()
 {
@@ -162,4 +163,47 @@ void tr::Tree::setNumbers(class Node *node, std::string val)
 
     // then recur on right subtree
     setNumbers(node->right, val);
+}
+
+tr::Node *tr::Tree::rightRotation(class Node *y)
+{
+    class tr::Node *x = y->left, *T2 = x->right;
+
+    // Perform rotation
+    x->right = y;
+    y->left = T2;
+
+    // Return new root
+    return x;
+}
+
+void tr::Tree::leftRotation(class Node *node)
+{
+}
+
+tr::Node *tr::Tree::createExpressionTree(std::vector<std::string> prefixExpression)
+{
+    auto element = prefixExpression[0];
+    prefixExpression.erase(prefixExpression.begin());
+
+    if (p::Parser::isInteger(element))
+    {
+
+        class tr::Node *newRoot = new tr::Node();
+        newRoot->data = element;
+
+        return newRoot;
+    }
+    else
+    {
+        class tr::Node *left = new tr::Node();
+        class tr::Node *right = new tr::Node();
+        class tr::Node *newRoot = new tr::Node();
+        left = tr::Tree::createExpressionTree(prefixExpression);
+        right = tr::Tree::createExpressionTree(prefixExpression);
+        newRoot->left = left;
+        newRoot->right = right;
+        newRoot->data = element;
+        return newRoot;
+    }
 }
