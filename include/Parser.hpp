@@ -16,7 +16,8 @@ namespace p
     public:
         Parser();
         void parseLine(std::string line);
-        void calculate(std::vector<std::string> line, tr::Tree *tree);
+        void shuntingYardPostFix(std::vector<std::string> line, tr::Tree *tree);
+        void shuntingYardPreFix(std::vector<std::string> line, tr::Tree *tree);
         std::vector<std::string> removeDupWord(std::string str);
         static bool isInteger(const std::string &s);
         static bool isOperator(std::string val);

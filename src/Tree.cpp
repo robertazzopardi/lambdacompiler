@@ -8,10 +8,35 @@ tr::Node::Node()
     left = right = parent = nullptr;
 }
 
+tr::Node::Node(std::string number)
+{
+    this->data = number;
+    this->left = this->right = nullptr;
+}
+
+tr::Node::Node(std::string op, Node *left, Node *right)
+{
+    this->data = op;
+    this->left = left;
+    this->right = right;
+}
+
+tr::Node::~Node()
+{
+    delete left, right, parent;
+    left = right = parent = nullptr;
+}
+
 tr::Tree::Tree()
 {
     root = new Node();
     curr = root;
+}
+
+tr::Tree::~Tree()
+{
+    delete root, curr;
+    root = curr = nullptr;
 }
 
 void tr::Tree::createLeft()

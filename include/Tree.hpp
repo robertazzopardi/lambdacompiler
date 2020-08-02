@@ -12,6 +12,8 @@ namespace tr
         std::string data;
         Node *left, *right, *parent;
         Node();
+        Node(std::string number);
+        Node(std::string op, Node *left, Node *right);
         ~Node();
     };
 
@@ -21,6 +23,7 @@ namespace tr
     public:
         Node *root, *curr;
         Tree();
+        ~Tree();
         void createLeft();
         void moveLeft();
         void createRight();
