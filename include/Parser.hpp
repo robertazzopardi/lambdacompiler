@@ -15,8 +15,9 @@ namespace p
 
     public:
         Parser();
+        void prettyPrint(int indent, tr::Node *node);
         void parseLine(std::string line);
-        void shuntingYardPostFix(std::vector<std::string> line, tr::Tree *tree);
+        tr::Node *shuntingYardPostFix(std::vector<std::string> line);
         void shuntingYardPreFix(std::vector<std::string> line, tr::Tree *tree);
         std::vector<std::string> removeDupWord(std::string str);
         static bool isInteger(const std::string &s);

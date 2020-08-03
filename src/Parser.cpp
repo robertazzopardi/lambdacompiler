@@ -21,11 +21,31 @@ void p::Parser::parseLine(std::string line)
     std::vector<std::string> words = removeDupWord(line);
 
     class tr::Tree *tree = new tr::Tree();
-    shuntingYardPostFix(words, tree);
+    tree->curr = shuntingYardPostFix(words);
     // shuntingYardPreFix(words, tree);
 
-    tree->printPreorder(tree->curr);
+    prettyPrint(0, tree->curr);
+
+    // tree->printPreorder(tree->curr);
     std::cout << std::endl;
+}
+
+void p::Parser::prettyPrint(int indent, tr::Node *node)
+{
+    if (node == nullptr)
+        return;
+
+    /* first print data of node */
+    if (!node->parent)
+        std::cout << node->data;
+
+    /* then recur on left sutree */
+    prettyPrint(indent, node->left);
+    std::cout << " ";
+
+    /* now recur on right subtree */
+    prettyPrint(indent, node->right);
+    std::cout << "  \n";
 }
 
 std::string trim(const std::string &str)
@@ -166,7 +186,7 @@ struct stack : public std::vector<T>
     bool empty() { return base_type::empty(); }
 };
 
-void p::Parser::shuntingYardPostFix(std::vector<std::string> tokens, tr::Tree *tree)
+tr::Node *p::Parser::shuntingYardPostFix(std::vector<std::string> tokens)
 {
     // std::vector<std::string> output;
     // stack<std::string> stack;
@@ -259,12 +279,12 @@ void p::Parser::shuntingYardPostFix(std::vector<std::string> tokens, tr::Tree *t
     }
 
     // tree->printPreorder(exp_stack.back());
-    tree->curr = exp_stack.pop();
+    // tree->curr = exp_stack.pop();
 
     // assert exp_stack.size() == 1,
     //     ('The expression stack is expected to be of size 1 ' 'after applying the Shunting-Yard algorithm. ' + ERROR_MESSAGE)
 
-    //     return exp_stack.pop()
+    return exp_stack.pop();
 }
 
 void p::Parser::shuntingYardPreFix(std::vector<std::string> tokens, tr::Tree *tree)
