@@ -21,8 +21,8 @@ void p::Parser::parseLine(std::string line)
     std::vector<std::string> words = removeDupWord(line);
 
     class tr::Tree *tree = new tr::Tree();
-    // shuntingYardPostFix(words, tree);
-    shuntingYardPreFix(words, tree);
+    shuntingYardPostFix(words, tree);
+    // shuntingYardPreFix(words, tree);
 
     tree->printPreorder(tree->curr);
     std::cout << std::endl;
@@ -123,7 +123,6 @@ bool p::Parser::isInteger(const std::string &s)
 bool p::Parser::isOperator(std::string val)
 {
     return c::operators.count(val) > 0;
-    // return find(c::SIGNS.begin(), c::SIGNS.end(), val) != c::SIGNS.end();
 }
 
 bool p::Parser::isBracket(const char &val)
@@ -169,33 +168,80 @@ struct stack : public std::vector<T>
 
 void p::Parser::shuntingYardPostFix(std::vector<std::string> tokens, tr::Tree *tree)
 {
-    std::vector<std::string> output;
-    stack<std::string> stack;
+    // std::vector<std::string> output;
+    // stack<std::string> stack;
+    // for (auto &&token : tokens)
+    // {
+    //     if (isInteger(token))
+    //     {
+    //         output.push_back(token);
+    //     }
+    //     else if (isOperator(token) || isBracket(*token.c_str()))
+    //     {
+    //         if (!isLeftBracket(*token.c_str()))
+    //         {
+    //             while (!stack.empty() && ((isRightBracket(*token.c_str()) && !isLeftBracket(*stack.top().c_str())) || (c::operators[stack.top()].precedence > c::operators[token].precedence) || ((c::operators[stack.top()].precedence == c::operators[token].precedence) && (c::operators[token].associates == c::Associates::left_to_right))))
+    //             {
+    //                 output.push_back(stack.pop());
+    //             }
+    //             // If we popped until '(' because token is ')', toss both parens
+    //             if (isRightBracket(*token.c_str()))
+    //             {
+    //                 stack.pop();
+    //             }
+    //         }
+    //         // Everything except ')' --> stack
+    //         if (!isRightBracket(*token.c_str()))
+    //         {
+    //             stack.push(token);
+    //         }
+    //     }
+    //     else
+    //     {
+    //         std::cout << "";
+    //     }
+    // }
+    // // Anything left on the operator stack just gets moved to the output
+    // while (!stack.empty())
+    // {
+    //     output.push_back(stack.pop());
+    // }
+    // for (auto &&i : output)
+    // {
+    //     std::cout << i;
+    // }
+
+    stack<std::string> op_stack;
+    stack<tr::Node *> exp_stack;
 
     for (auto &&token : tokens)
     {
         if (isInteger(token))
         {
-            output.push_back(token);
+            exp_stack.push_back(new tr::Node(token));
         }
         else if (isOperator(token) || isBracket(*token.c_str()))
         {
             if (!isLeftBracket(*token.c_str()))
             {
-                while (!stack.empty() && ((isRightBracket(*token.c_str()) && !isLeftBracket(*stack.top().c_str())) || (c::operators[stack.top()].precedence > c::operators[token].precedence) || ((c::operators[stack.top()].precedence == c::operators[token].precedence) && (c::operators[token].associates == c::Associates::left_to_right))))
+                while (!op_stack.empty() && ((isRightBracket(*token.c_str()) && !isLeftBracket(*op_stack.top().c_str())) || (c::operators[op_stack.top()].precedence > c::operators[token].precedence) || ((c::operators[op_stack.top()].precedence == c::operators[token].precedence) && (c::operators[token].associates == c::Associates::left_to_right))))
                 {
-                    output.push_back(stack.pop());
+                    // output.push_back(op_stack.pop());
+                    std::string op = op_stack.pop();
+                    class tr::Node *e2 = exp_stack.pop();
+                    class tr::Node *e1 = exp_stack.pop();
+                    exp_stack.push(new tr::Node(op, e1, e2));
                 }
                 // If we popped until '(' because token is ')', toss both parens
                 if (isRightBracket(*token.c_str()))
                 {
-                    stack.pop();
+                    op_stack.pop();
                 }
             }
             // Everything except ')' --> stack
             if (!isRightBracket(*token.c_str()))
             {
-                stack.push(token);
+                op_stack.push(token);
             }
         }
         else
@@ -203,16 +249,22 @@ void p::Parser::shuntingYardPostFix(std::vector<std::string> tokens, tr::Tree *t
             std::cout << "";
         }
     }
-    // Anything left on the operator stack just gets moved to the output
-    while (!stack.empty())
+    while (!op_stack.empty())
     {
-        output.push_back(stack.pop());
+        std::string op = op_stack.pop();
+        class tr::Node *e2 = exp_stack.pop();
+        class tr::Node *e1 = exp_stack.pop();
+        exp_stack.push(new tr::Node(op, e1, e2));
+        // output.push_back(stack.pop());
     }
 
-    for (auto &&i : output)
-    {
-        std::cout << i;
-    }
+    // tree->printPreorder(exp_stack.back());
+    tree->curr = exp_stack.pop();
+
+    // assert exp_stack.size() == 1,
+    //     ('The expression stack is expected to be of size 1 ' 'after applying the Shunting-Yard algorithm. ' + ERROR_MESSAGE)
+
+    //     return exp_stack.pop()
 }
 
 void p::Parser::shuntingYardPreFix(std::vector<std::string> tokens, tr::Tree *tree)
