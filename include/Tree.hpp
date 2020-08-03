@@ -24,6 +24,7 @@ namespace tr
         Node *root, *curr;
         Tree();
         ~Tree();
+        int getDepth(tr::Node *node);
         void createLeft();
         void moveLeft();
         void createRight();

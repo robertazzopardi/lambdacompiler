@@ -232,3 +232,21 @@ tr::Node *tr::Tree::createExpressionTree(std::vector<std::string> prefixExpressi
         return newRoot;
     }
 }
+
+int tr::Tree::getDepth(tr::Node *node)
+{
+    if (node == NULL)
+        return 0;
+    else
+    {
+        /* compute the height of each subtree */
+        int lheight = getDepth(node->left);
+        int rheight = getDepth(node->right);
+
+        /* use the larger one */
+        if (lheight > rheight)
+            return (lheight + 1);
+        else
+            return (rheight + 1);
+    }
+}

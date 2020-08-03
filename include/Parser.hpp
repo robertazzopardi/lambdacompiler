@@ -15,7 +15,7 @@ namespace p
 
     public:
         Parser();
-        void prettyPrint(int indent, tr::Node *node);
+        void prettyPrint(tr::Node *p, int level, int depth);
         void parseLine(std::string line);
         tr::Node *shuntingYardPostFix(std::vector<std::string> line);
         void shuntingYardPreFix(std::vector<std::string> line, tr::Tree *tree);

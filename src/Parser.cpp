@@ -7,6 +7,8 @@
 #include <vector>
 #include <queue>
 #include <map>
+#include <cmath>
+#include <iomanip>
 
 #include "../include/Parser.hpp"
 #include "../include/Constants.hpp"
@@ -22,30 +24,54 @@ void p::Parser::parseLine(std::string line)
 
     class tr::Tree *tree = new tr::Tree();
     tree->curr = shuntingYardPostFix(words);
-    // shuntingYardPreFix(words, tree);
-
-    prettyPrint(0, tree->curr);
 
     // tree->printPreorder(tree->curr);
-    std::cout << std::endl;
+    // std::cout << std::endl;
+
+    // prettyPrint(tree->curr, 1, 0);
+    int h = tree->getDepth(tree->curr);
+
+    for (size_t i = 1; i <= h; i++)
+    {
+        if (i > 1)
+        {
+            std::cout << std::endl;
+            for (size_t j = 0; j < std::pow(2, h - i) - 1; j++)
+                std::cout << "  ";
+        }
+        else
+        {
+            for (size_t j = 0; j < std::pow(2, h - i) - 1; j++)
+                std::cout << " ";
+        }
+
+        prettyPrint(tree->curr, i, h);
+    }
+    std::cout << "\n"
+              << std::endl;
 }
 
-void p::Parser::prettyPrint(int indent, tr::Node *node)
+void p::Parser::prettyPrint(tr::Node *node, int level, int depth)
 {
     if (node == nullptr)
+    {
         return;
+    }
 
-    /* first print data of node */
-    if (!node->parent)
+    if (level == 1)
+    {
         std::cout << node->data;
+    }
+    else if (level > 1)
+    {
 
-    /* then recur on left sutree */
-    prettyPrint(indent, node->left);
-    std::cout << " ";
+        prettyPrint(node->left, level - 1, depth);
+        // std::cout << "x";
+        for (size_t j = 0; j < std::pow(2, depth - level - 1); j++)
+            std::cout << " ";
 
-    /* now recur on right subtree */
-    prettyPrint(indent, node->right);
-    std::cout << "  \n";
+        prettyPrint(node->right, level - 1, depth);
+    }
 }
 
 std::string trim(const std::string &str)
