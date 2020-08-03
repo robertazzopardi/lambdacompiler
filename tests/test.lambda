@@ -1,8 +1,0 @@
-class Test :
-    define name : 10
-
-    define get | int :
-        return 10
-
-    define function | int, float :
-        return 10, 10
