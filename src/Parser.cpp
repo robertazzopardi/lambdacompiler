@@ -25,12 +25,14 @@ void p::Parser::parseLine(std::string line)
     class tr::Tree *tree = new tr::Tree();
     tree->curr = shuntingYardPostFix(words);
 
-    // tree->printPreorder(tree->curr);
-    // std::cout << std::endl;
+    tree->printPreorder(tree->curr);
+    std::cout << std::endl;
+    // printTreeHelper(tree);
+}
 
-    // prettyPrint(tree->curr, 1, 0);
+void p::Parser::printTreeHelper(tr::Tree *tree)
+{
     int h = tree->getDepth(tree->curr);
-
     for (size_t i = 1; i <= h; i++)
     {
         if (i > 1)
@@ -45,13 +47,13 @@ void p::Parser::parseLine(std::string line)
                 std::cout << " ";
         }
 
-        prettyPrint(tree->curr, i, h);
+        printTree(tree->curr, i, h);
     }
     std::cout << "\n"
               << std::endl;
 }
 
-void p::Parser::prettyPrint(tr::Node *node, int level, int depth)
+void p::Parser::printTree(tr::Node *node, int level, int depth)
 {
     if (node == nullptr)
     {
@@ -65,12 +67,12 @@ void p::Parser::prettyPrint(tr::Node *node, int level, int depth)
     else if (level > 1)
     {
 
-        prettyPrint(node->left, level - 1, depth);
+        printTree(node->left, level - 1, depth);
         // std::cout << "x";
         for (size_t j = 0; j < std::pow(2, depth - level - 1); j++)
             std::cout << " ";
 
-        prettyPrint(node->right, level - 1, depth);
+        printTree(node->right, level - 1, depth);
     }
 }
 

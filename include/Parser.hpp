@@ -4,7 +4,6 @@
 #include "Tree.hpp"
 
 #include <vector>
-#include <deque>
 
 namespace p
 {
@@ -15,7 +14,8 @@ namespace p
 
     public:
         Parser();
-        void prettyPrint(tr::Node *p, int level, int depth);
+        void printTree(tr::Node *p, int level, int depth);
+        void printTreeHelper(tr::Tree *tree);
         void parseLine(std::string line);
         tr::Node *shuntingYardPostFix(std::vector<std::string> line);
         void shuntingYardPreFix(std::vector<std::string> line, tr::Tree *tree);
