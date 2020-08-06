@@ -5,10 +5,8 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <queue>
 #include <map>
 #include <cmath>
-#include <iomanip>
 
 #include "Parser.h"
 #include "Constants.h"
@@ -159,7 +157,8 @@ std::vector<std::string> p::Parser::removeDupWord(std::string str)
 
 bool p::Parser::isInteger(const std::string &s)
 {
-    if (s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+')))
+    //'-' '+'
+    if (s.empty() || ((!isdigit(s[0])) && (s[0] != c::SUB) && (s[0] != c::ADD)))
         return false;
 
     char *p;
@@ -220,49 +219,6 @@ struct stack : public std::vector<T>
 
 tr::Node *p::Parser::shuntingYardPostFix(std::vector<std::string> tokens)
 {
-    // std::vector<std::string> output;
-    // stack<std::string> stack;
-    // for (auto &&token : tokens)
-    // {
-    //     if (isInteger(token))
-    //     {
-    //         output.push_back(token);
-    //     }
-    //     else if (isOperator(token) || isBracket(*token.c_str()))
-    //     {
-    //         if (!isLeftBracket(*token.c_str()))
-    //         {
-    //             while (!stack.empty() && ((isRightBracket(*token.c_str()) && !isLeftBracket(*stack.top().c_str())) || (c::operators[stack.top()].precedence > c::operators[token].precedence) || ((c::operators[stack.top()].precedence == c::operators[token].precedence) && (c::operators[token].associates == c::Associates::left_to_right))))
-    //             {
-    //                 output.push_back(stack.pop());
-    //             }
-    //             // If we popped until '(' because token is ')', toss both parens
-    //             if (isRightBracket(*token.c_str()))
-    //             {
-    //                 stack.pop();
-    //             }
-    //         }
-    //         // Everything except ')' --> stack
-    //         if (!isRightBracket(*token.c_str()))
-    //         {
-    //             stack.push(token);
-    //         }
-    //     }
-    //     else
-    //     {
-    //         std::cout << "";
-    //     }
-    // }
-    // // Anything left on the operator stack just gets moved to the output
-    // while (!stack.empty())
-    // {
-    //     output.push_back(stack.pop());
-    // }
-    // for (auto &&i : output)
-    // {
-    //     std::cout << i;
-    // }
-
     stack<std::string> op_stack;
     stack<tr::Node *> exp_stack;
 
@@ -309,12 +265,6 @@ tr::Node *p::Parser::shuntingYardPostFix(std::vector<std::string> tokens)
         exp_stack.push(new tr::Node(op, e1, e2));
         // output.push_back(stack.pop());
     }
-
-    // tree->printPreorder(exp_stack.back());
-    // tree->curr = exp_stack.pop();
-
-    // assert exp_stack.size() == 1,
-    //     ('The expression stack is expected to be of size 1 ' 'after applying the Shunting-Yard algorithm. ' + ERROR_MESSAGE)
 
     return exp_stack.pop();
 }

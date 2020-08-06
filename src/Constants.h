@@ -14,6 +14,9 @@ namespace c
     const char DIV = '/';
     const char LB = '(';
     const char RB = ')';
+    enum class Operators {
+
+    };
     enum class Associates
     {
         none,
