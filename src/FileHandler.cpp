@@ -1,7 +1,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-#include "../include/FileHandler.hpp"
+#include "FileHandler.h"
 
 f::FileHandler::FileHandler(std::string path)
 {

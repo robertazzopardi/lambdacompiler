@@ -2,8 +2,8 @@
 #define BINARY_OPERATION
 
 #include <iostream>
-#include "Parser.hpp"
-#include "Constants.hpp"
+#include "Parser.h"
+#include "Constants.h"
 
 namespace b
 {

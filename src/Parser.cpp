@@ -10,9 +10,9 @@
 #include <cmath>
 #include <iomanip>
 
-#include "../include/Parser.hpp"
-#include "../include/Constants.hpp"
-#include "../include/Tree.hpp"
+#include "Parser.h"
+#include "Constants.h"
+#include "Tree.h"
 
 p::Parser::Parser()
 {
@@ -50,7 +50,7 @@ void p::Parser::printTreeHelper(tr::Tree *tree)
         printTree(tree->curr, i, h);
     }
     std::cout << "\n"
-              << std::endl;
+        << std::endl;
 }
 
 void p::Parser::printTree(tr::Node *node, int level, int depth)
@@ -204,14 +204,18 @@ struct stack : public std::vector<T>
         base_type::push_back(x);
         return x;
     }
-    const T &top() { return base_type::back(); }
+    const T &top() {
+        return base_type::back();
+    }
     T pop()
     {
         T x = std::move(top());
         base_type::pop_back();
         return x;
     }
-    bool empty() { return base_type::empty(); }
+    bool empty() {
+        return base_type::empty();
+    }
 };
 
 tr::Node *p::Parser::shuntingYardPostFix(std::vector<std::string> tokens)

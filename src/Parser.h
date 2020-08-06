@@ -1,7 +1,7 @@
 #ifndef PARSER // include guard
 #define PARSER
 
-#include "Tree.hpp"
+#include "Tree.h"
 
 #include <vector>
 

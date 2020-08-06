@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "../include/Tree.hpp"
-#include "../include/Parser.hpp"
+#include "Tree.h"
+#include "Parser.h"
 
 tr::Node::Node()
 {

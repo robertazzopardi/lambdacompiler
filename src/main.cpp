@@ -1,12 +1,12 @@
-#include "../include/FileHandler.hpp"
-#include "../include/Parser.hpp"
-
 #include <string>
 #include <iostream>
 #include <vector>
 #include <sstream>
 #include <algorithm>
 #include <iterator>
+
+#include "FileHandler.h"
+#include "Parser.h"
 
 int main(int argc, char *argv[])
 {
