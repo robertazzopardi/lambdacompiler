@@ -25,11 +25,11 @@ namespace c
         int precedence;
         Associates associates;
     };
-    static std::map<std::string, info> operators{{"^", {4, Associates::right_to_left}},
-                                                 {"*", {3, Associates::left_to_right}},
-                                                 {"/", {3, Associates::left_to_right}},
-                                                 {"+", {2, Associates::left_to_right}},
-                                                 {"-", {2, Associates::left_to_right}}};
+    static std::map<std::string, info> operators{ { "^", { 4, Associates::right_to_left } },
+        { "*", { 3, Associates::left_to_right } },
+        { "/", { 3, Associates::left_to_right } },
+        { "+", { 2, Associates::left_to_right } },
+        { "-", { 2, Associates::left_to_right } } };
 } // namespace c
 
 #endif
