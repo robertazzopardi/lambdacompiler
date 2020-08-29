@@ -1,7 +1,11 @@
 #ifndef TREE // include guard
 #define TREE
 
+#include "Constants.h"
+
 #include <vector>
+// #include <string>
+#include <iostream>
 
 namespace tr
 {

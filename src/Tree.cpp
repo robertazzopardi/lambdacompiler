@@ -1,7 +1,4 @@
-#include <iostream>
-
 #include "Tree.h"
-#include "Parser.h"
 
 tr::Node::Node()
 {
@@ -211,9 +208,8 @@ tr::Node *tr::Tree::createExpressionTree(std::vector<std::string> prefixExpressi
     auto element = prefixExpression[0];
     prefixExpression.erase(prefixExpression.begin());
 
-    if (p::Parser::isInteger(element))
+    if (c::isInteger(element))
     {
-
         class tr::Node *newRoot = new tr::Node();
         newRoot->data = element;
 

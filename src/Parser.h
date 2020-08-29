@@ -10,24 +10,33 @@ namespace p
     class Parser
     {
     private:
+        std::vector<std::string> lines;
         std::vector<std::string> tokens;
 
     public:
-        Parser();
-        void printTree(tr::Node *p, int level, int depth);
-        void printTreeHelper(tr::Tree *tree);
-        void parseLine(std::string line);
-        tr::Node *shuntingYardPostFix(std::vector<std::string> line);
-        void shuntingYardPreFix(std::vector<std::string> line, tr::Tree *tree);
-        std::vector<std::string> removeDupWord(std::string str);
-        static bool isInteger(const std::string &s);
-        static bool isOperator(std::string val);
-        static bool isBracket(const char &val);
+        Parser(std::vector<std::string> filesLines);
 
-        static bool isLeftBracket(const char &val);
-        static bool isRightBracket(const char &val);
-        std::string pop(std::vector<std::string> vec);
-        std::string trim(const std::string &str);
+        // parses the lines from the file
+        void parseLines();
+
+        // parses a single string line
+        // void parseLine(std::string line);
+
+        // recursively traverse the tree
+        void formatPrintTree(tr::Node *p, int level, int depth);
+        // prints the abstract syntax tree with formatting
+        void printTreeHelper(tr::Tree *tree);
+
+        // parses the tokens using the shunting yard algorithm
+        // returns a node with the post fix representation of the expression
+        tr::Node *shuntingYardPostFix(std::vector<std::string> line);
+        // parses the tokens using the shunting yard algorithm
+        // returns a node with the pre fix representation of the expression
+        void shuntingYardPreFix(std::vector<std::string> line, tr::Tree *tree);
+        // seperates a string into its token components
+        std::vector<std::string> removeDupWord(std::string str);
+
+        // std::string trim(const std::string &str);
     };
 } // namespace p
 

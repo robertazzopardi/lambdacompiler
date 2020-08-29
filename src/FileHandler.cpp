@@ -12,7 +12,7 @@ f::FileHandler::~FileHandler()
 {
 }
 
-std::vector<std::string> f::FileHandler::readFile()
+std::vector<std::string> f::FileHandler::readFilesLines()
 {
     std::vector<std::string> lines;
     std::ifstream file(FileHandler::filePath);

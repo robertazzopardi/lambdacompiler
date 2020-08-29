@@ -16,7 +16,7 @@ namespace f
     public:
         FileHandler(std::string);
         ~FileHandler();
-        std::vector<std::string> readFile();
+        std::vector<std::string> readFilesLines();
         void writeFile(std::string);
     }; // class FileHandler
 } // namespace f

@@ -14,10 +14,7 @@ namespace c
     const char DIV = '/';
     const char LB = '(';
     const char RB = ')';
-    enum class Operators
-    {
 
-    };
     enum class Associates
     {
         none,
@@ -34,6 +31,37 @@ namespace c
                                                  {"/", {3, Associates::left_to_right}},
                                                  {"+", {2, Associates::left_to_right}},
                                                  {"-", {2, Associates::left_to_right}}};
+
+    inline bool isOperator(std::string val)
+    {
+        return operators.count(val) > 0;
+    }
+
+    inline bool isBracket(const char &val)
+    {
+        return LB == val || RB == val;
+    }
+
+    inline bool isLeftBracket(const char &val)
+    {
+        return LB == val;
+    }
+
+    inline bool isRightBracket(const char &val)
+    {
+        return RB == val;
+    }
+
+    inline bool isInteger(const std::string &s)
+    {
+        if (s.empty() || ((!isdigit(s[0])) && (s[0] != SUB) && (s[0] != ADD)))
+            return false;
+
+        char *p;
+        strtol(s.c_str(), &p, 10);
+
+        return (*p == 0);
+    }
 } // namespace c
 
 #endif

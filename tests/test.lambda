@@ -1,8 +1,7 @@
-class Test :
-    define name : 10
+class Test {
+    define add: int a, int b
+        return a + b
 
-    define get | int :
+    define zed:
         return 10
-
-    define function | int, float :
-        return 10, 10
+}

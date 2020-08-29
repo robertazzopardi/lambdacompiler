@@ -12,21 +12,36 @@
 #include "Constants.h"
 #include "Tree.h"
 
-p::Parser::Parser()
+p::Parser::Parser(std::vector<std::string> filesLines)
 {
+    p::Parser::lines = filesLines;
 }
 
-void p::Parser::parseLine(std::string line)
+void p::Parser::parseLines()
 {
-    std::vector<std::string> words = removeDupWord(line);
+    for (auto &&line : lines)
+    {
+        std::vector<std::string> words = removeDupWord(line);
 
-    class tr::Tree *tree = new tr::Tree();
-    tree->curr = shuntingYardPostFix(words);
+        class tr::Tree *tree = new tr::Tree();
+        tree->curr = shuntingYardPostFix(words);
 
-    tree->printPreorder(tree->curr);
-    std::cout << std::endl;
-    // printTreeHelper(tree);
+        tree->printPreorder(tree->curr);
+        std::cout << std::endl;
+    }
 }
+
+// void p::Parser::parseLine(std::string line)
+// {
+//     std::vector<std::string> words = removeDupWord(line);
+
+//     class tr::Tree *tree = new tr::Tree();
+//     tree->curr = shuntingYardPostFix(words);
+
+//     tree->printPreorder(tree->curr);
+//     std::cout << std::endl;
+//     // printTreeHelper(tree);
+// }
 
 void p::Parser::printTreeHelper(tr::Tree *tree)
 {
@@ -45,18 +60,16 @@ void p::Parser::printTreeHelper(tr::Tree *tree)
                 std::cout << " ";
         }
 
-        printTree(tree->curr, i, h);
+        formatPrintTree(tree->curr, i, h);
     }
     std::cout << "\n"
               << std::endl;
 }
 
-void p::Parser::printTree(tr::Node *node, int level, int depth)
+void p::Parser::formatPrintTree(tr::Node *node, int level, int depth)
 {
     if (node == nullptr)
-    {
         return;
-    }
 
     if (level == 1)
     {
@@ -64,26 +77,25 @@ void p::Parser::printTree(tr::Node *node, int level, int depth)
     }
     else if (level > 1)
     {
-
-        printTree(node->left, level - 1, depth);
+        formatPrintTree(node->left, level - 1, depth);
         // std::cout << "x";
         for (size_t j = 0; j < std::pow(2, depth - level - 1); j++)
             std::cout << " ";
 
-        printTree(node->right, level - 1, depth);
+        formatPrintTree(node->right, level - 1, depth);
     }
 }
 
-std::string trim(const std::string &str)
-{
-    size_t first = str.find_first_not_of(' ');
-    if (std::string::npos == first)
-    {
-        return str;
-    }
-    size_t last = str.find_last_not_of(' ');
-    return str.substr(first, (last - first + 1));
-}
+// std::string trim(const std::string &str)
+// {
+//     size_t first = str.find_first_not_of(' ');
+//     if (std::string::npos == first)
+//     {
+//         return str;
+//     }
+//     size_t last = str.find_last_not_of(' ');
+//     return str.substr(first, (last - first + 1));
+// }
 
 std::vector<std::string> p::Parser::removeDupWord(std::string str)
 {
@@ -91,17 +103,9 @@ std::vector<std::string> p::Parser::removeDupWord(std::string str)
     std::istringstream ss(str);
     std::vector<std::string> out;
     // Traverse through all words
-    do
-    {
-        // Read a word
-        std::string word;
-        ss >> word;
-
-        // Print the read word
-        // cout << word << endl;
-        out.push_back(word);
-        // While there is more to read
-    } while (ss);
+    std::string token;
+    while (ss >> token)
+        out.push_back(token);
 
     //---------------
     std::vector<std::string> split;
@@ -128,70 +132,26 @@ std::vector<std::string> p::Parser::removeDupWord(std::string str)
             split.push_back(text);
 
         } // found
-        else if (isOperator(text))
+        else if (c::isOperator(text) || c::isInteger(text))
         {
-
             split.push_back(text);
         }
-        else if (isInteger(text))
-        {
-            split.push_back(text);
-        } // not found
         else
         {
-            // std::cout << text;
+            // not found
             for (auto &&i : text)
             {
                 std::stringstream ss;
                 std::string s;
-                // char c = 'a';
                 ss << i;
                 ss >> s;
+
                 split.push_back(s);
             }
         }
     }
 
     return split;
-}
-
-bool p::Parser::isInteger(const std::string &s)
-{
-    //'-' '+'
-    if (s.empty() || ((!isdigit(s[0])) && (s[0] != c::SUB) && (s[0] != c::ADD)))
-        return false;
-
-    char *p;
-    strtol(s.c_str(), &p, 10);
-
-    return (*p == 0);
-}
-
-bool p::Parser::isOperator(std::string val)
-{
-    return c::operators.count(val) > 0;
-}
-
-bool p::Parser::isBracket(const char &val)
-{
-    return c::LB == val || c::RB == val;
-}
-
-bool p::Parser::isLeftBracket(const char &val)
-{
-    return c::LB == val;
-}
-
-bool p::Parser::isRightBracket(const char &val)
-{
-    return c::RB == val;
-}
-
-std::string p::Parser::pop(std::vector<std::string> vec)
-{
-    auto x = std::move(vec.back());
-    vec.pop_back();
-    return x;
 }
 
 template <typename T>
@@ -226,15 +186,15 @@ tr::Node *p::Parser::shuntingYardPostFix(std::vector<std::string> tokens)
 
     for (auto &&token : tokens)
     {
-        if (isInteger(token))
+        if (c::isInteger(token))
         {
             exp_stack.push_back(new tr::Node(token));
         }
-        else if (isOperator(token) || isBracket(*token.c_str()))
+        else if (c::isOperator(token) || c::isBracket(*token.c_str()))
         {
-            if (!isLeftBracket(*token.c_str()))
+            if (!c::isLeftBracket(*token.c_str()))
             {
-                while (!op_stack.empty() && ((isRightBracket(*token.c_str()) && !isLeftBracket(*op_stack.top().c_str())) || (c::operators[op_stack.top()].precedence > c::operators[token].precedence) || ((c::operators[op_stack.top()].precedence == c::operators[token].precedence) && (c::operators[token].associates == c::Associates::left_to_right))))
+                while (!op_stack.empty() && ((c::isRightBracket(*token.c_str()) && !c::isLeftBracket(*op_stack.top().c_str())) || (c::operators[op_stack.top()].precedence > c::operators[token].precedence) || ((c::operators[op_stack.top()].precedence == c::operators[token].precedence) && (c::operators[token].associates == c::Associates::left_to_right))))
                 {
                     // output.push_back(op_stack.pop());
                     std::string op = op_stack.pop();
@@ -243,16 +203,12 @@ tr::Node *p::Parser::shuntingYardPostFix(std::vector<std::string> tokens)
                     exp_stack.push(new tr::Node(op, e1, e2));
                 }
                 // If we popped until '(' because token is ')', toss both parens
-                if (isRightBracket(*token.c_str()))
-                {
+                if (c::isRightBracket(*token.c_str()))
                     op_stack.pop();
-                }
             }
             // Everything except ')' --> stack
-            if (!isRightBracket(*token.c_str()))
-            {
+            if (!c::isRightBracket(*token.c_str()))
                 op_stack.push(token);
-            }
         }
         else
         {
@@ -280,26 +236,26 @@ void p::Parser::shuntingYardPreFix(std::vector<std::string> tokens, tr::Tree *tr
 
     for (auto &&token : tokens)
     {
-        if (isInteger(token))
+        if (c::isInteger(token))
         {
             output.push(token);
         }
-        else if (isOperator(token) || isBracket(*token.c_str()))
+        else if (c::isOperator(token) || c::isBracket(*token.c_str()))
         {
-            if (!isRightBracket(*token.c_str()))
+            if (!c::isRightBracket(*token.c_str()))
             {
-                while (!operatorStack.empty() && ((isLeftBracket(*token.c_str()) && !isRightBracket(*operatorStack.top().c_str())) || (c::operators[operatorStack.top()].precedence > c::operators[token].precedence) || ((c::operators[operatorStack.top()].precedence == c::operators[token].precedence) && (c::operators[token].associates == c::Associates::right_to_left))))
+                while (!operatorStack.empty() && ((c::isLeftBracket(*token.c_str()) && !c::isRightBracket(*operatorStack.top().c_str())) || (c::operators[operatorStack.top()].precedence > c::operators[token].precedence) || ((c::operators[operatorStack.top()].precedence == c::operators[token].precedence) && (c::operators[token].associates == c::Associates::right_to_left))))
                 {
                     output.push(operatorStack.pop());
                 }
                 // If we popped until '(' because token is ')', toss both parens
-                if (isLeftBracket(*token.c_str()))
+                if (c::isLeftBracket(*token.c_str()))
                 {
                     operatorStack.pop();
                 }
             }
             // Everything except ')' --> stack
-            if (!isLeftBracket(*token.c_str()))
+            if (!c::isLeftBracket(*token.c_str()))
             {
                 operatorStack.push(token);
             }
