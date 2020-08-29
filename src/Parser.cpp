@@ -48,7 +48,7 @@ void p::Parser::printTreeHelper(tr::Tree *tree)
         printTree(tree->curr, i, h);
     }
     std::cout << "\n"
-        << std::endl;
+              << std::endl;
 }
 
 void p::Parser::printTree(tr::Node *node, int level, int depth)
@@ -203,7 +203,8 @@ struct stack : public std::vector<T>
         base_type::push_back(x);
         return x;
     }
-    const T &top() {
+    const T &top()
+    {
         return base_type::back();
     }
     T pop()
@@ -212,7 +213,8 @@ struct stack : public std::vector<T>
         base_type::pop_back();
         return x;
     }
-    bool empty() {
+    bool empty()
+    {
         return base_type::empty();
     }
 };
