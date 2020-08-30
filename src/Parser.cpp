@@ -1,13 +1,3 @@
-#include <string>
-#include <vector>
-#include <string>
-#include <algorithm>
-#include <iostream>
-#include <sstream>
-#include <vector>
-#include <map>
-#include <cmath>
-
 #include "Parser.h"
 #include "Constants.h"
 #include "Tree.h"
@@ -21,27 +11,23 @@ void p::Parser::parseLines()
 {
     for (auto &&line : lines)
     {
-        std::vector<std::string> words = removeDupWord(line);
-
-        class tr::Tree *tree = new tr::Tree();
-        tree->curr = shuntingYardPostFix(words);
-
-        tree->printPreorder(tree->curr);
-        std::cout << std::endl;
+        p::Parser::parseLine(line);
     }
 }
 
-// void p::Parser::parseLine(std::string line)
-// {
-//     std::vector<std::string> words = removeDupWord(line);
+void p::Parser::parseLine(std::string line)
+{
+    std::vector<std::string> words = removeDupWord(line);
 
-//     class tr::Tree *tree = new tr::Tree();
-//     tree->curr = shuntingYardPostFix(words);
+    class tr::Tree *tree = new tr::Tree();
+    // n::Node<std::string> *parsedNode = shuntingYardPostFix(words);
+    tree->curr = shuntingYardPostFix(words);
+    // tree->curr = parsedNode;
 
-//     tree->printPreorder(tree->curr);
-//     std::cout << std::endl;
-//     // printTreeHelper(tree);
-// }
+    tree->printPreorder(tree->curr);
+    std::cout << std::endl;
+    // printTreeHelper(tree);
+}
 
 void p::Parser::printTreeHelper(tr::Tree *tree)
 {
@@ -66,7 +52,8 @@ void p::Parser::printTreeHelper(tr::Tree *tree)
               << std::endl;
 }
 
-void p::Parser::formatPrintTree(tr::Node *node, int level, int depth)
+template <class T>
+void p::Parser::formatPrintTree(const n::Node<T> *node, int level, int depth)
 {
     if (node == nullptr)
         return;
@@ -77,12 +64,12 @@ void p::Parser::formatPrintTree(tr::Node *node, int level, int depth)
     }
     else if (level > 1)
     {
-        formatPrintTree(node->left, level - 1, depth);
+        formatPrintTree(node->leftNode, level - 1, depth);
         // std::cout << "x";
         for (size_t j = 0; j < std::pow(2, depth - level - 1); j++)
             std::cout << " ";
 
-        formatPrintTree(node->right, level - 1, depth);
+        formatPrintTree(node->rightNode, level - 1, depth);
     }
 }
 
@@ -179,16 +166,17 @@ struct stack : public std::vector<T>
     }
 };
 
-tr::Node *p::Parser::shuntingYardPostFix(std::vector<std::string> tokens)
+template <class T>
+n::Node<T> *p::Parser::shuntingYardPostFix(std::vector<T> tokens)
 {
     stack<std::string> op_stack;
-    stack<tr::Node *> exp_stack;
+    stack<n::Node<std::string> *> exp_stack;
 
     for (auto &&token : tokens)
     {
         if (c::isInteger(token))
         {
-            exp_stack.push_back(new tr::Node(token));
+            exp_stack.push_back(new n::Node<std::string>(token));
         }
         else if (c::isOperator(token) || c::isBracket(*token.c_str()))
         {
@@ -198,9 +186,9 @@ tr::Node *p::Parser::shuntingYardPostFix(std::vector<std::string> tokens)
                 {
                     // output.push_back(op_stack.pop());
                     std::string op = op_stack.pop();
-                    class tr::Node *e2 = exp_stack.pop();
-                    class tr::Node *e1 = exp_stack.pop();
-                    exp_stack.push(new tr::Node(op, e1, e2));
+                    class n::Node<std::string> *e2 = exp_stack.pop();
+                    class n::Node<std::string> *e1 = exp_stack.pop();
+                    exp_stack.push(new n::Node<std::string>(op, e1, e2));
                 }
                 // If we popped until '(' because token is ')', toss both parens
                 if (c::isRightBracket(*token.c_str()))
@@ -218,9 +206,9 @@ tr::Node *p::Parser::shuntingYardPostFix(std::vector<std::string> tokens)
     while (!op_stack.empty())
     {
         std::string op = op_stack.pop();
-        class tr::Node *e2 = exp_stack.pop();
-        class tr::Node *e1 = exp_stack.pop();
-        exp_stack.push(new tr::Node(op, e1, e2));
+        class n::Node<std::string> *e2 = exp_stack.pop();
+        class n::Node<std::string> *e1 = exp_stack.pop();
+        exp_stack.push(new n::Node<std::string>(op, e1, e2));
         // output.push_back(stack.pop());
     }
 
