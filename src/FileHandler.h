@@ -1,24 +1,23 @@
 // FileHandler.hpp
-#ifndef FILE_HANDLER // include guard
-#define FILE_HANDLER
+#ifndef _FILE_HANDLER_H_ // include guard
+#define _FILE_HANDLER_H_
 
 #include <vector>
 #include <string>
 
-namespace f
+namespace filesystem
 {
     class FileHandler
     {
     private:
-        /* data */
         std::string filePath;
 
     public:
-        FileHandler(std::string);
+        FileHandler(std::string path);
         ~FileHandler();
         std::vector<std::string> readFilesLines();
-        void writeFile(std::string);
+        void writeFile(std::string data);
     }; // class FileHandler
-} // namespace f
+} // namespace filesystem
 
 #endif

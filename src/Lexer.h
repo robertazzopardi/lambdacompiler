@@ -1,19 +1,32 @@
-#ifndef CONSTANTS // include guard
-#define CONSTANTS
+#ifndef _LEXER_H_ // include guard
+#define _LEXER_H_
 
-#include <vector>
 #include <map>
 #include <string>
+#include <vector>
+#include <iostream>
 
-namespace c
+namespace lexer
 {
-    // static const std::vector<std::string> SIGNS{"+", "-", "*", "/", "^"};
     const char ADD = '+';
     const char SUB = '-';
     const char MULT = '*';
     const char DIV = '/';
     const char LB = '(';
     const char RB = ')';
+    const char EX = '^';
+    const char SP = ' ';
+
+    enum class Attribute
+    {
+        integer,
+        lparen,
+        rparen,
+        opadd,
+        opsub,
+        opmul,
+        opdiv
+    };
 
     enum class Associates
     {
@@ -21,47 +34,41 @@ namespace c
         left_to_right,
         right_to_left
     };
+
     struct info
     {
         int precedence;
         Associates associates;
     };
+
     static std::map<std::string, info> operators{{"^", {4, Associates::right_to_left}},
                                                  {"*", {3, Associates::left_to_right}},
                                                  {"/", {3, Associates::left_to_right}},
                                                  {"+", {2, Associates::left_to_right}},
                                                  {"-", {2, Associates::left_to_right}}};
 
-    inline bool isOperator(std::string val)
+    class Lexer
     {
-        return operators.count(val) > 0;
-    }
+    private:
+        /* data */
+    public:
+        Lexer(/* args */);
+        ~Lexer();
 
-    inline bool isBracket(const char &val)
-    {
-        return LB == val || RB == val;
-    }
+        static bool isOperator(std::string val);
 
-    inline bool isLeftBracket(const char &val)
-    {
-        return LB == val;
-    }
+        static bool isBracket(const char &val);
 
-    inline bool isRightBracket(const char &val)
-    {
-        return RB == val;
-    }
+        static bool isLeftBracket(const char &val);
 
-    inline bool isInteger(const std::string &s)
-    {
-        if (s.empty() || ((!isdigit(s[0])) && (s[0] != SUB) && (s[0] != ADD)))
-            return false;
+        static bool isRightBracket(const char &val);
 
-        char *p;
-        strtol(s.c_str(), &p, 10);
+        static bool isInteger(const std::string &s);
 
-        return (*p == 0);
-    }
-} // namespace c
+        // split line at spaces
+        static std::vector<std::string> splitString(std::string line);
+    };
+
+} // namespace lexer
 
 #endif
