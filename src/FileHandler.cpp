@@ -1,15 +1,12 @@
-#include <string>
-#include <fstream>
-#include <iostream>
-
 #include "FileHandler.h"
+#include "Lexer.h"
 
 namespace filesystem
 {
 
     FileHandler::FileHandler(std::string path)
     {
-        FileHandler::filePath = path;
+        filePath = path;
     }
 
     FileHandler::~FileHandler()
@@ -19,7 +16,7 @@ namespace filesystem
     std::vector<std::string> FileHandler::readFilesLines()
     {
         std::vector<std::string> lines;
-        std::ifstream file(FileHandler::filePath);
+        std::ifstream file(filePath);
         std::string line;
         while (std::getline(file, line))
         {
