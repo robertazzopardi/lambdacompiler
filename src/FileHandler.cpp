@@ -1,5 +1,4 @@
 #include "FileHandler.h"
-#include "Lexer.h"
 
 namespace filesystem
 {

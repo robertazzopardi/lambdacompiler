@@ -14,10 +14,10 @@ namespace lexer
     // const char SUB = '-';
     // const char MULT = '*';
     // const char DIV = '/';
-    const char LB = '(';
-    const char RB = ')';
-    const char EX = '^';
-    const char SP = ' ';
+    static const char LB = '(';
+    static const char RB = ')';
+    static const char EX = '^';
+    static const char SP = ' ';
 
     enum class Attribute
     {
@@ -87,7 +87,7 @@ namespace lexer
         Lexer();
         ~Lexer();
 
-        static bool isOperator(std::string val);
+        static bool isOperator(const std::string val);
 
         static bool isOperator(char val);
 
@@ -97,13 +97,15 @@ namespace lexer
 
         static bool isRightBracket(const char &val);
 
-        static bool isInteger(const std::string &s);
+        // static bool isInteger(const std::string &s);
+
+        static bool isInt(const std::string s);
 
         // split line at spaces
         static std::vector<std::string> split(std::string line);
 
         // seperates a string into its token components
-        static std::vector<Token> lex(std::string str);
+        static std::vector<Token> lex(const std::string str);
     };
 
 } // namespace lexer

@@ -36,7 +36,7 @@ namespace parser
 
         for (auto &&token : tokens)
         {
-            if (lexer::Lexer::isInteger(token.value))
+            if (lexer::Lexer::isInt(token.value))
             {
                 exp_stack.push_back(new node::Node<lexer::Token>(token));
             }

@@ -11,7 +11,16 @@ namespace lexer
     {
     }
 
-    bool Lexer::isOperator(std::string val)
+    bool Lexer::isInt(const std::string s)
+    {
+        // add negative check
+        std::string t(s);
+        if (t.at(0) == '-')
+            t = t.substr(1);
+        return t.find_first_not_of("0123456789") == std::string::npos;
+    }
+
+    bool Lexer::isOperator(const std::string val)
     {
         return operators.count(val) > 0;
     }
@@ -31,16 +40,16 @@ namespace lexer
         return RB == val;
     }
 
-    bool Lexer::isInteger(const std::string &s)
-    {
-        if (s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+')))
-            return false;
+    // bool Lexer::isInteger(const std::string &s)
+    // {
+    //     if (s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+')))
+    //         return false;
 
-        char *p;
-        strtol(s.c_str(), &p, 10);
+    //     char *p;
+    //     strtol(s.c_str(), &p, 10);
 
-        return (*p == 0);
-    }
+    //     return (*p == 0);
+    // }
 
     std::vector<std::string> Lexer::split(std::string line)
     {
@@ -53,7 +62,7 @@ namespace lexer
         return out;
     }
 
-    std::vector<lexer::Token> Lexer::lex(std::string str)
+    std::vector<lexer::Token> Lexer::lex(const std::string str)
     {
 
         std::vector<Token> tokens;
@@ -88,7 +97,7 @@ namespace lexer
                 Token token(Attribute::opadd, text);
                 tokens.push_back(token);
             }
-            else if (isInteger(text))
+            else if (isInt(text))
             {
                 Token token(Attribute::integer, text);
                 tokens.push_back(token);

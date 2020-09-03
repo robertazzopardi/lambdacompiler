@@ -1,3 +1,4 @@
+# gcc
 CC		:= g++
 CFLAGS	:= -std=c++17 -Wall -Wextra -g
 
@@ -38,3 +39,20 @@ run: all
 
 $(BIN)/$(EXECUTABLE): $(OBJECTS)
 	$(CC) $(CFLAGS) $(CINCLUDES) $(CLIBS) $^ -o $@ $(LIBRARIES)
+
+
+# assembly with nasm
+nasm	:= nasm
+format	:= -felf64
+file	:= simple
+nfile	:= $(file).asm
+
+# linking
+linker	:= ld
+output	:= $(file).o
+
+machinecode := ./a.out
+
+assemblerun:
+	$(nasm) $(format) $(nfile) && $(linker) $(output) && $(machinecode)
+

@@ -60,4 +60,87 @@ namespace tree
         std::cout << "\n"
                   << std::endl;
     }
+
+    int Tree::getDepth(const node::Node<lexer::Token> *node)
+    {
+        if (node == nullptr)
+            return 0;
+        else
+        {
+            // compute the height of each subtree
+            int lheight = getDepth(node->leftNode);
+            int rheight = getDepth(node->rightNode);
+
+            // use the larger one
+            if (lheight > rheight)
+                return (lheight + 1);
+            else
+                return (rheight + 1);
+        }
+    }
+
+    void Tree::printPreorder(const node::Node<lexer::Token> *node)
+    {
+        if (node == nullptr)
+            return;
+
+        /* first print data of node */
+        std::cout << node->data << " ";
+
+        /* then recur on left sutree */
+        printPreorder(node->leftNode);
+
+        /* now recur on right subtree */
+        printPreorder(node->rightNode);
+    }
+
+    void Tree::printPostorder(const node::Node<lexer::Token> *node)
+    {
+        if (node == nullptr)
+            return;
+
+        // first recur on left subtree
+        printPostorder(node->leftNode);
+
+        // then recur on right subtree
+        printPostorder(node->rightNode);
+
+        // now deal with the node
+        std::cout << node->data << " ";
+    }
+
+    void Tree::printInorder(const node::Node<lexer::Token> *node)
+    {
+        if (node == nullptr)
+            return;
+
+        /* first recur on left child */
+        printInorder(node->leftNode);
+
+        /* then print the data of node */
+        std::cout << node->data << " ";
+
+        /* now recur on right child */
+        printInorder(node->rightNode);
+    }
+
+    void Tree::formatPrintTree(const node::Node<lexer::Token> *node, int level, int depth)
+    {
+        if (node == nullptr)
+            return;
+
+        if (level == 1)
+        {
+            std::cout << node->data;
+        }
+        else if (level > 1)
+        {
+            formatPrintTree(node->leftNode, level - 1, depth);
+
+            for (size_t j = 0; j < std::pow(2, depth - level - 1); j++)
+                std::cout << " ";
+
+            formatPrintTree(node->rightNode, level - 1, depth);
+        }
+    }
 } // namespace tree
