@@ -119,30 +119,30 @@ _div:
 ;   Function exp_by_squaring_iterative(x, n)
 _ipow:
    ; set the x and y values
-   mov r8, 1 ; x
-   mov r9, 10 ; n
+   mov r8, 12 ; x
+   mov r9, 0 ; n
 
    ; check if n is 1
    cmp r9, 1         ; compare n with 1
-   je _equalsOne     ; goto equalsone if n is 1
+   ; je _equalsOne     ; goto equalsone if n is 1
    jne _notEqualsOne ; goto noequalsone if n is not 1
 
 ; return 1
-_equalsOne:
+; _equalsOne:
    mov rax, r8 
    ret         ; if n equals 1 return x
 
 ;     if n < 0 then
 _notEqualsOne:
    cmp r9, 0       ; compare n with 0
-   jl _lessthan    ; goto lessthan zero if x is less than zero
+   ; jl _lessthan    ; goto lessthan zero if x is less than zero
    jnl _equalszero ; goto equalszero if n is equal to zero
 
-_lessthan:
+; _lessthan:
 ;       x := 1 / x;
 ;       n := -n;
    xor rdx, rdx ; zero rdx
-   mov rax, 1  ; move 1 to rax
+   mov eax, 1  ; move 1 to rax
    div r8      ; divide 1 / x
    mov r8, rax ; move x back to r8
    not r9      ; revers n's bits
@@ -150,11 +150,11 @@ _lessthan:
 ;     if n = 0 then return 1
 _equalszero:   
    cmp r9, 0   ; compare n with zero
-   je _ezero   ; go to ezero if n equals zero
+   ; je _ezero   ; go to ezero if n equals zero
    jne _nzero  ; go to nzero if n is not zero
 
-_ezero: ; return 1
-   mov rax, 1  ; set rax as 1 
+; _ezero: ; return 1
+   mov eax, 1  ; set rax as 1 
    ret         ; return 1 if n is 0
 
 ;     y := 1;
@@ -170,36 +170,42 @@ _loop1:
 ;       if n is even then 
 _even:
 ;         x := x * x;
-   mov rax, r8 ; move x to rax
-   mul rax     ; multiply x by itself
-   mov r8, rax ; move x back to r8
+   ; mov rax, r8 ; move x to rax
+   ; mul rax     ; multiply x by itself
+   ; mov r8, rax ; move x back to r8
+   imul r8, r8
 
 ;         n := n / 2;
-   mov rbx, 2  ; 2 to rbx
-   mov rax, r9 ; move n to rax
-   div rbx     ; divide n by 2
-   mov r9, rax ; move n back
+   shr r9, 1
+   ; mov rbx, 2  ; 2 to rbx
+   ; mov rax, r9 ; move n to rax
+   ; div rbx     ; divide n by 2
+   ; mov r9, rax ; move n back
 
    jmp _condition ; jump over odd since if even, was processed
 
 ; n is an odd number
 _odd:
 ;         y := x * y;
-   mov rax, r10 ; move y to rax
-   mul r8   ; multiply y by x
-   mov r10, rax ; move y back to r10
+   ; mov rax, r10 ; move y to rax
+   ; mul r8   ; multiply y by x
+   ; mov r10, rax ; move y back to r10
+   imul r10, r8
 
 ;         x := x * x;
-   mov rax, r8 ; mov x to rax
-   mul rax  ; multiply x by itself 
-   mov r8, rax ; mov x back to r10
+   ; mov rax, r8 ; mov x to rax
+   ; mul rax  ; multiply x by itself 
+   ; mov r8, rax ; mov x back to r10
+   imul r8, r8
 
 ;         n := (n – 1) / 2;
-   mov rax, r9 ; mov n to rax
-   sub rax, 1  ; minus 1 from n
-   mov rbx, 2  ; set rbx as 2
-   div rbx     ; divide n by 2
-   mov r9, rax ; move n back to rax
+   sub r9, 1
+   shr r9,1 
+   ; mov rax, r9 ; mov n to rax
+   ; sub rax, 1  ; minus 1 from n
+   ; mov rbx, 2  ; set rbx as 2
+   ; div rbx     ; divide n by 2
+   ; mov r9, rax ; move n back to rax
 
 ;     while n > 1 do
 _condition:
