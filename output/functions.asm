@@ -40,22 +40,6 @@ _printRAXLoop:
 	jne _printRAXLoop
 
 
-	; mov rax, -4
-	; test rax, rax
-	; je _printRAXLoop2
-	
-	; ;print
-	; ; write to console
-	; mov rax, sys_write
-	; mov rdi, stdout
-	
-	; mov rsi, num1
-	; mov rdx, num1_len 
-
-	; syscall ; call kernal interrupt
-	
-
-
 ; print each digit
 _printRAXLoop2:
 	mov rcx, [digitSpacePos]

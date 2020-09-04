@@ -13,13 +13,13 @@
 ;    ; write to console
 ;    mov rax, sys_write
 ;    mov rdi, stdout
-   
+
 ;    mov rsi, message
-;    mov rdx, message_len 
+;    mov rdx, message_len
 
 ;    syscall ; call kernal interrupt
 
-;    mov rax, sys_exit ; set exit command 
+;    mov rax, sys_exit ; set exit command
 ;    mov rdi, success ; set return code
 ;    syscall ; call kernal interrupt
 
@@ -30,9 +30,11 @@ section .bss
 	digitSpacePos resb 8
 
 section .data
-   num1 db '-'
-   num1_len equ $-num1
+   negsign db '-'
+   negsign_len equ $-negsign
 	; text db "Hello, World!",10,0
+
+
 
 
 section .text
@@ -71,12 +73,12 @@ _start:
 
 
 
-   ; exit 
+   ; exit
    call _exit
 
 ; addition
 _add:
-   mov rax, 10
+   mov rax, 10000
    mov rbx, 15
    add rax, rbx
 
@@ -84,7 +86,7 @@ _add:
 
 ; subtraction
 _sub:
-   mov rax, 20
+   mov rax, 200
    mov rbx, 10
    sub rax, rbx
 
@@ -93,13 +95,14 @@ _sub:
 ; multiplication
 _mul:
    mov rax, 20
-   mul rax
+   mov rbx, 33
+   mul rbx
 
    ret
 
 ; division
 _div:
-   xor   rdx, rdx   ; required to print decimal and 
+   xor   rdx, rdx   ; required to print decimal and
    mov     rax, 400     ; move our first number into eax
    mov     rbx, 10      ; move our second number into ebx
    div     rbx         ; divide eax by ebx
@@ -116,106 +119,56 @@ _div:
 
 
 
-;   Function exp_by_squaring_iterative(x, n)
+; power
 _ipow:
-   ; set the x and y values
-   mov r8, 12 ; x
-   mov r9, 0 ; n
+   mov r8, 2 ; x
+   mov r9, 3 ; n
 
    ; check if n is 1
    cmp r9, 1         ; compare n with 1
-   ; je _equalsOne     ; goto equalsone if n is 1
    jne _notEqualsOne ; goto noequalsone if n is not 1
 
-; return 1
-; _equalsOne:
-   mov rax, r8 
+   mov rax, r8  ; return 1
    ret         ; if n equals 1 return x
 
-;     if n < 0 then
 _notEqualsOne:
-   cmp r9, 0       ; compare n with 0
-   ; jl _lessthan    ; goto lessthan zero if x is less than zero
+   test r9, r9       ;     if n < 0
    jnl _equalszero ; goto equalszero if n is equal to zero
 
-; _lessthan:
-;       x := 1 / x;
-;       n := -n;
    xor rdx, rdx ; zero rdx
-   mov eax, 1  ; move 1 to rax
-   div r8      ; divide 1 / x
-   mov r8, rax ; move x back to r8
-   not r9      ; revers n's bits
-   
-;     if n = 0 then return 1
-_equalszero:   
-   cmp r9, 0   ; compare n with zero
-   ; je _ezero   ; go to ezero if n equals zero
-   jne _nzero  ; go to nzero if n is not zero
+   mov eax, 1
+   div r8      ; x := 1 / x;
+   mov r8, rax
+   not r9   ; n := -n;
 
-; _ezero: ; return 1
-   mov eax, 1  ; set rax as 1 
+_equalszero:
+   jne _nzero  ; n != 0
+
+   mov eax, 1  ; return 1
    ret         ; return 1 if n is 0
 
-;     y := 1;
 _nzero:
-   mov r10, 1 ; set r10 as 1, y
+   mov r10, 1 ; y := 1;
 
 _loop1:
-   mov rax, r9  ; move n to rax
-   test al, 1   ; check if n is an odd number by testing the low bit 
-   jz  _even    ; jump if even = lowest bit clear = zero
-   jnz _odd     ; jump if odd  = lowest bit set
-   
-;       if n is even then 
-_even:
-;         x := x * x;
-   ; mov rax, r8 ; move x to rax
-   ; mul rax     ; multiply x by itself
-   ; mov r8, rax ; move x back to r8
-   imul r8, r8
+   mov rax, r9
+   test al, 1   ; check if n is an odd number by testing the low bit
+   jz _even    ; n is even
 
-;         n := n / 2;
-   shr r9, 1
-   ; mov rbx, 2  ; 2 to rbx
-   ; mov rax, r9 ; move n to rax
-   ; div rbx     ; divide n by 2
-   ; mov r9, rax ; move n back
+   ; n is odd
+   imul r10, r8 ; y := x * y;
+   sub r9, 1 ; n - 1
 
-   jmp _condition ; jump over odd since if even, was processed
+_even: ; n is 0
+   imul r8, r8 ; x := x * x;
+   shr r9, 1 ; n / 2
 
-; n is an odd number
-_odd:
-;         y := x * y;
-   ; mov rax, r10 ; move y to rax
-   ; mul r8   ; multiply y by x
-   ; mov r10, rax ; move y back to r10
-   imul r10, r8
-
-;         x := x * x;
-   ; mov rax, r8 ; mov x to rax
-   ; mul rax  ; multiply x by itself 
-   ; mov r8, rax ; mov x back to r10
-   imul r8, r8
-
-;         n := (n – 1) / 2;
-   sub r9, 1
-   shr r9,1 
-   ; mov rax, r9 ; mov n to rax
-   ; sub rax, 1  ; minus 1 from n
-   ; mov rbx, 2  ; set rbx as 2
-   ; div rbx     ; divide n by 2
-   ; mov r9, rax ; move n back to rax
-
-;     while n > 1 do
-_condition:
-   cmp r9, 1   ; compare r9 with 1
+   cmp r9, 1   ; while n > 1 do
    jg _loop1   ; if 1 is greater than 1 then loop
 
-;     return x * y
-   mov rax, r8 ; move x to rax
-   mul r10     ; multiple x and y
-   ret         ; return 
+   mov rax, r8 ; return x * y
+   mul r10
+   ret
 
 
 
@@ -237,7 +190,7 @@ _condition:
 ;     y := 1;
 
 ;     while n > 1 do
-;       if n is even then 
+;       if n is even then
 ;         x := x * x;
 ;         n := n / 2;
 ;       else
