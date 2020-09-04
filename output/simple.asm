@@ -119,7 +119,7 @@ _div:
 ;   Function exp_by_squaring_iterative(x, n)
 _ipow:
    ; set the x and y values
-   mov r8, 50 ; x
+   mov r8, 1 ; x
    mov r9, 10 ; n
 
    ; check if n is 1
