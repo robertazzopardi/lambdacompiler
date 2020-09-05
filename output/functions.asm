@@ -9,13 +9,32 @@
 
 ; call system exit
 _exit:
-   ; system exit
+	; system exit
 	mov rax, sys_exit
 	mov rdi, success
 	syscall
 
 ; print function
 _printRAX:
+
+; check if number is negative 
+	test rax, rax
+	jns jmps
+
+	mov r8, rax ; store print value
+
+	mov rax, sys_write ; specify system write 
+	mov rdi, stdout
+
+	mov rsi, negsign		; output negative sign
+	mov rdx, negsign_len	; pass length of negative sign
+
+	syscall ; call kernal interrupt
+
+	mov rax, r8 ; move value back to rax
+	neg rax ; change negative value to positive
+jmps:
+
 	mov rcx, digitSpace
 	mov rbx, 10
 	mov [rcx], rbx
@@ -38,7 +57,6 @@ _printRAXLoop:
 	pop rax
 	cmp rax, 0
 	jne _printRAXLoop
-
 
 ; print each digit
 _printRAXLoop2:

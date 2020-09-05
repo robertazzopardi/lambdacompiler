@@ -35,8 +35,6 @@ section .data
 	; text db "Hello, World!",10,0
 
 
-
-
 section .text
 	global _start
 
@@ -50,27 +48,45 @@ _start:
 
    ; mov rax, 10
    ; sub rax, 10
+
+
+
+
+
+
+
+
+
+
+
+;----------------------------------
    call _add
 	call _printRAX
+;----------------------------------
 
 
+;----------------------------------
    call _sub
    call _printRAX
+;----------------------------------
 
 
+;----------------------------------
    call _mul
    call _printRAX
+;----------------------------------
 
 
+;----------------------------------
    call _div
    call _printRAX
+;----------------------------------
 
 
-
-
+;----------------------------------
    call _ipow
    call _printRAX
-
+;----------------------------------
 
 
    ; exit
@@ -78,23 +94,23 @@ _start:
 
 ; addition
 _add:
-   mov rax, 10000
-   mov rbx, 15
+   mov rax, -10
+   mov rbx, 5
    add rax, rbx
 
    ret
 
 ; subtraction
 _sub:
-   mov rax, 200
-   mov rbx, 10
+   mov rax, 5
+   mov rbx, 100
    sub rax, rbx
 
    ret
 
 ; multiplication
 _mul:
-   mov rax, 20
+   mov rax, -20
    mov rbx, 33
    mul rbx
 
