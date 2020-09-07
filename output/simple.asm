@@ -1,157 +1,132 @@
-
-; section .data
-   ; num1 db '-'
-   ; num1_len equ $-num1
-
-   ; message db "Hello, world!", nl
-   ; message_len equ $-message
-
-; section .text
-
-; global _start
-; _start:
-;    ; write to console
-;    mov rax, sys_write
-;    mov rdi, stdout
-
-;    mov rsi, message
-;    mov rdx, message_len
-
-;    syscall ; call kernal interrupt
-
-;    mov rax, sys_exit ; set exit command
-;    mov rdi, success ; set return code
-;    syscall ; call kernal interrupt
+;  nasm -felf64 simple.asm && ld simple.o && ./a.out
 
 %include 'functions.asm'
 
+
+%define Inf             __?Infinity?__ 
+%define NaN             __?QNaN?__ 
+%define QNaN            __?QNaN?__ 
+%define SNaN            __?SNaN?__ 
+
+%define float8(x)       __?float8?__(x) 
+%define float16(x)      __?float16?__(x) 
+%define bfloat16(x)     __?bfloat16?__(x) 
+%define float32(x)      __?float32?__(x) 
+%define float64(x)      __?float64?__(x) 
+%define float80m(x)     __?float80m?__(x) 
+%define float80e(x)     __?float80e?__(x) 
+%define float128l(x)    __?float128l?__(x) 
+%define float128h(x)    __?float128h?__(x)
+
+
+
 section .bss
-	digitSpace resb 100
-	digitSpacePos resb 8
+	digitSpace 		resb 100
+	digitSpacePos 	resb 8
+
 
 section .data
-   negsign db '-'
-   negsign_len equ $-negsign
+	negsign 		db '-'
+	negsign_len 	equ $-negsign
 	; text db "Hello, World!",10,0
 
 
 section .text
 	global _start
 
+
 _start:
 
-   ; operation
-	; mov rax, 257
-   ; ; add rax, 100
-   ; mov rcx, 10000
-   ; mul rcx
-
-   ; mov rax, 10
-   ; sub rax, 10
-
-
-
-
-
-
-
-
-
+; testing -------------------------
+	mov    rax, float64(3.141592653589793238462)
+	call _print
+; ---------------------------------
 
 
 ;----------------------------------
-   call _add
-	call _printRAX
+	call _add
+	call _print
 ;----------------------------------
 
-
 ;----------------------------------
-   call _sub
-   call _printRAX
-;----------------------------------
-
-
-;----------------------------------
-   call _mul
-   call _printRAX
+	call _sub
+	call _print
 ;----------------------------------
 
-
 ;----------------------------------
-   call _div
-   call _printRAX
-;----------------------------------
-
-
-;----------------------------------
-   call _ipow
-   call _printRAX
+	call _mul
+	call _print
 ;----------------------------------
 
+;----------------------------------
+	call _div
+	call _print
+;----------------------------------
+
+;----------------------------------
+	call _ipow
+	call _print
+;----------------------------------
 
    ; exit
-   call _exit
+	call _exit
 
-; addition
+
+
+; addition ---------------------------------------------------------
 _add:
-   mov rax, -10
-   mov rbx, 5
-   add rax, rbx
+	mov rax, 10 ;convert char to int (or something)
+	mov rbx, 10
+	add rax, rbx
 
-   ret
+	ret
+; ------------------------------------------------------------------
 
-; subtraction
+; subtraction ------------------------------------------------------
 _sub:
-   mov rax, 5
-   mov rbx, 100
-   sub rax, rbx
+	mov rax, 5
+	mov rbx, 100
+	sub rax, rbx
 
-   ret
+	ret
+; ------------------------------------------------------------------
 
-; multiplication
+; multiplication ---------------------------------------------------
 _mul:
-   mov rax, -20
-   mov rbx, 33
-   mul rbx
+	mov rax, -20
+	mov rbx, 33
+	mul rbx
 
-   ret
+	ret
+; ------------------------------------------------------------------
 
-; division
+; division ---------------------------------------------------------
 _div:
-   xor   rdx, rdx   ; required to print decimal and
-   mov     rax, 400     ; move our first number into eax
-   mov     rbx, 10      ; move our second number into ebx
-   div     rbx         ; divide eax by ebx
+	xor   edx, edx   ; required to print decimal and
+	mov     rax, 400     ; move our first number into eax
+	mov     rbx, 10      ; move our second number into ebx
+	div     rbx         ; divide eax by ebx
 
-   ret
+	ret
+; ------------------------------------------------------------------
 
-
-
-
-
-
-
-
-
-
-
-; power
+; power ------------------------------------------------------------
 _ipow:
    mov r8, 2 ; x
-   mov r9, 3 ; n
+   mov r9, 15 ; n
 
    ; check if n is 1
    cmp r9, 1         ; compare n with 1
    jne _notEqualsOne ; goto noequalsone if n is not 1
 
-   mov rax, r8  ; return 1
+   mov rax, r8  ; return 1 which should be 1
    ret         ; if n equals 1 return x
 
 _notEqualsOne:
    test r9, r9       ;     if n < 0
    jnl _equalszero ; goto equalszero if n is equal to zero
 
-   xor rdx, rdx ; zero rdx
+   xor edx, edx ; zero rdx
    mov eax, 1
    div r8      ; x := 1 / x;
    mov r8, rax
@@ -168,7 +143,7 @@ _nzero:
 
 _loop1:
    mov rax, r9
-   test al, 1   ; check if n is an odd number by testing the low bit
+   test al, 1   ; check if n is an odd number
    jz _even    ; n is even
 
    ; n is odd
@@ -185,32 +160,4 @@ _even: ; n is 0
    mov rax, r8 ; return x * y
    mul r10
    ret
-
-
-
-
-
-
-
-
-
-
-
-;   Function exp_by_squaring_iterative(x, n)
-;     if n < 0 then
-;       x := 1 / x;
-;       n := -n;
-
-;     if n = 0 then return 1
-
-;     y := 1;
-
-;     while n > 1 do
-;       if n is even then
-;         x := x * x;
-;         n := n / 2;
-;       else
-;         y := x * y;
-;         x := x * x;
-;         n := (n – 1) / 2;
-;     return x * y
+; ------------------------------------------------------------------

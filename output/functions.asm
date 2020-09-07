@@ -7,34 +7,34 @@
 %define ascii_off 48
 %define nl 10
 
-; call system exit
+; ------------------------------------------------------------------------------
+; EXIT PROGRAM
 _exit:
 	; system exit
 	mov rax, sys_exit
 	mov rdi, success
 	syscall
 
-; print function
-_printRAX:
-
-; check if number is negative 
-	test rax, rax
-	jns jmps
+; ------------------------------------------------------------------------------
+; PRINT FUNCTION
+_print:
+; test number to see if it is negative -----------------------------------------
+	test rax, rax ; check if number is negative 
+	jns _not_negative ; jmp if not signed
 
 	mov r8, rax ; store print value
 
 	mov rax, sys_write ; specify system write 
 	mov rdi, stdout
-
 	mov rsi, negsign		; output negative sign
 	mov rdx, negsign_len	; pass length of negative sign
-
 	syscall ; call kernal interrupt
 
 	mov rax, r8 ; move value back to rax
 	neg rax ; change negative value to positive
-jmps:
+; test number to see if it is negative end -------------------------------------
 
+_not_negative: ; handle the number normally
 	mov rcx, digitSpace
 	mov rbx, 10
 	mov [rcx], rbx
@@ -76,3 +76,5 @@ _printRAXLoop2:
 	jge _printRAXLoop2
 
 	ret
+
+; ------------------------------------------------------------------------------

@@ -14,9 +14,13 @@ namespace tree
     {
     private:
     public:
-        node::Node<lexer::Token> *root, *curr;
         Tree();
         ~Tree();
+
+        // store the value of the root node of the tree and the current node
+        // in a traversal
+        node::Node<lexer::Token> *root, *curr;
+
         // returns the depth of a node in the tree
         int getDepth(const node::Node<lexer::Token> *node);
 
@@ -37,19 +41,15 @@ namespace tree
         void setValue(T data);
 
         // prints the tree with a pre-order traversal
-        // template <class T>
         void printPreorder(const node::Node<lexer::Token> *node);
 
         // prints the tree with a post-order traversal
-        // template <class T>
         void printPostorder(const node::Node<lexer::Token> *node);
 
         // prints the tree with a in-order traversal
-        // template <class T>
         void printInorder(const node::Node<lexer::Token> *node);
 
         // recursively traverse the tree
-        // template <class T>
         void formatPrintTree(const node::Node<lexer::Token> *p, int level, int depth);
 
         // prints the abstract syntax tree with formatting
@@ -61,7 +61,6 @@ namespace tree
     {
         curr->data = data;
     }
-
 } // namespace tree
 
 #endif
