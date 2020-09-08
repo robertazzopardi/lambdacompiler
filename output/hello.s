@@ -25,16 +25,16 @@ global main
 extern printf
 
 section .data
-    string db `%f`, 10, 0
-    rs dq 1.643243
+    fmt db `%f`, 10, 0
+    num1 dq 1.643243
 
 section .text
 
 main:
 ; PRINT FLOAT
     sub rsp, 8                  ; allign stack to 16 bytes
-    movq xmm0, qword [rs]
-    mov rdi, string
+    movq xmm0, qword [num1]
+    mov rdi, fmt
     mov rax, 1
     call printf
     add rsp, 8                  ; set stack back 
