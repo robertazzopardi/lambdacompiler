@@ -2,37 +2,35 @@
 ; needed things 
 ;   wrt ..plt
 ;   gcc -no-pie
-; 
 
-          global    main
-        ;   extern    puts
-          extern    printf
-
-          section   .text
-main:                                       ; This is called by the C library startup code
-        ;   mov       rdi, message            ; First integer (or pointer) argument in rdi
-        ;   call      puts wrt ..plt                    ; puts(message)
-        ;   ret                               ; Return from main back into C library wrapper
-        
-
-        
-        mov esi, num    ; 64-bit ABI passing order starts w/ edi, esi, ...
-        mov edi, fmtd    ;
-        mov eax, 0      ; printf is varargs, so EAX counts # of non-integer arguments being passed
-        call printf
-
-        ret
+; nasm -felf64 hola.asm && ld hola.o && ./a.out
 
 
+%include 'functions.asm'
 
-fmtd: db "%f", 0x0a, 0
 
-num:	DD	1.234
-num2:	DQ	123.456
+section .bss
+	digitSpace 		  resb 100
+	digitSpacePos 	resb 8
 
-; msg:    db "Hello, world,", 0
 
-; fmt:    db "%s", 10, 0
+section .data
+	negsign 		    db '-'
+	negsign_len 	  equ $-negsign
 
-; message:
-;           dw        'gfdgdf', 10        ; Note strings must be terminated with 0 in C
+  choice	    	  DB	'y'
+  number		      DW	12345
+  neg_number	    DW	-12345
+  big_number	    DQ	123456789
+  real_number1	  DD	1.234
+  real_number2	  DQ	123.456
+
+section .text
+	global _start
+
+_start:
+  mov rax, number
+  call _print
+
+  call _exit
+

@@ -3,23 +3,6 @@
 %include 'functions.asm'
 
 
-%define Inf             __?Infinity?__ 
-%define NaN             __?QNaN?__ 
-%define QNaN            __?QNaN?__ 
-%define SNaN            __?SNaN?__ 
-
-%define float8(x)       __?float8?__(x) 
-%define float16(x)      __?float16?__(x) 
-%define bfloat16(x)     __?bfloat16?__(x) 
-%define float32(x)      __?float32?__(x) 
-%define float64(x)      __?float64?__(x) 
-%define float80m(x)     __?float80m?__(x) 
-%define float80e(x)     __?float80e?__(x) 
-%define float128l(x)    __?float128l?__(x) 
-%define float128h(x)    __?float128h?__(x)
-
-
-
 section .bss
 	digitSpace 		resb 100
 	digitSpacePos 	resb 8
@@ -38,8 +21,7 @@ section .text
 _start:
 
 ; testing -------------------------
-	mov    rax, float64(3.141592653589793238462)
-	call _print
+
 ; ---------------------------------
 
 
