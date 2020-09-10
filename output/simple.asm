@@ -1,5 +1,7 @@
 ;  nasm -felf64 simple.asm && ld simple.o && ./a.out
 
+; nasm simple.asm -f elf64 -o simple.o && gcc -no-pie -Wall -Wextra -Werror -o simple simple.o && ./simple
+
 %include 'functions.asm'
 
 
@@ -25,18 +27,18 @@ _start:
 
 
 ;----------------------------------
-	call _add
-	call _print
+	; call _add
+	; call _print
 ;----------------------------------
 
 ;----------------------------------
-	call _sub
-	call _print
+	; call _sub
+	; call _print
 ;----------------------------------
 
 ;----------------------------------
-	call _mul
-	call _print
+	; call _mul
+	; call _print
 ;----------------------------------
 
 ;----------------------------------
@@ -55,37 +57,37 @@ _start:
 
 
 ; addition ---------------------------------------------------------
-_add:
-	mov rax, 10 ;convert char to int (or something)
-	mov rbx, 10
-	add rax, rbx
+; _add:
+; 	mov rax, 10 ;convert char to int (or something)
+; 	mov rbx, 10
+; 	add rax, rbx
 
-	ret
+; 	ret
 ; ------------------------------------------------------------------
 
 ; subtraction ------------------------------------------------------
-_sub:
-	mov rax, 5
-	mov rbx, 100
-	sub rax, rbx
+; _sub:
+; 	mov rax, 5
+; 	mov rbx, 100
+; 	sub rax, rbx
 
-	ret
+; 	ret
 ; ------------------------------------------------------------------
 
 ; multiplication ---------------------------------------------------
-_mul:
-	mov rax, -20
-	mov rbx, 33
-	mul rbx
+; _mul:
+; 	mov rax, -20
+; 	mov rbx, 33
+; 	mul rbx
 
-	ret
+; 	ret
 ; ------------------------------------------------------------------
 
 ; division ---------------------------------------------------------
 _div:
 	xor   edx, edx   ; required to print decimal and
 	mov     rax, 400     ; move our first number into eax
-	mov     rbx, 10      ; move our second number into ebx
+	mov     rbx, 103      ; move our second number into ebx
 	div     rbx         ; divide eax by ebx
 
 	ret
