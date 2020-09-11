@@ -55,3 +55,6 @@
 
 # Local History for Visual Studio Code
 .history/
+
+# testing folders
+output/

@@ -3,31 +3,51 @@
 namespace filesystem
 {
 
-    FileHandler::FileHandler(std::string path)
+    FileHandler::FileHandler()
     {
-        filePath = path;
     }
 
     FileHandler::~FileHandler()
     {
     }
 
-    std::vector<std::string> FileHandler::readFilesLines()
+    std::vector<std::string> FileHandler::readFilesLines(std::string path)
     {
         std::vector<std::string> lines;
-        std::ifstream file(filePath);
+        std::ifstream file(path);
         std::string line;
-        while (std::getline(file, line))
+
+        if (file.is_open())
         {
-            if (line.find("//") == std::string::npos)
+            while (std::getline(file, line))
             {
-                lines.push_back(line);
+                if (line.find("//") == std::string::npos)
+                {
+                    lines.push_back(line);
+                }
             }
         }
+        else
+        {
+            std::cout << "Unable to open file" << std::endl;
+        }
+
         return lines;
     }
 
-    void FileHandler::writeFile(std::string path)
+    void FileHandler::writeFile(std::string path, std::string data)
     {
+        const std::string assemblyFileName = "assembly.asm";
+
+        std::ofstream myfile(path + assemblyFileName);
+        if (myfile.is_open())
+        {
+            myfile << data;
+            myfile.close();
+        }
+        else
+        {
+            std::cout << "Unable to open file";
+        }
     }
 } // namespace filesystem

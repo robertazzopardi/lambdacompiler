@@ -12,13 +12,11 @@ namespace filesystem
     class FileHandler
     {
     private:
-        std::string filePath;
-
     public:
-        FileHandler(std::string path);
+        FileHandler();
         ~FileHandler();
-        std::vector<std::string> readFilesLines();
-        void writeFile(std::string data);
+        static std::vector<std::string> readFilesLines(std::string path);
+        static void writeFile(std::string path, std::string data);
     }; // class FileHandler
 } // namespace filesystem
 

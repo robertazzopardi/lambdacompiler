@@ -1,25 +1,43 @@
 #ifndef _ASSEMBLY_H_
 #define _ASSEMBLY_H_
 
+#include <vector>
 #include <string>
-#include <sstream>
-#include <iostream>
 
-namespace asmembly
+#include "FileHandler.h"
+#include "Tree.h"
+#include "Lexer.h"
+
+namespace assembly
 {
-    static const std::string nl = "\n";
-    static const std::string tab = "\t";
-    static const std::string sp = " ";
-    static const std::string textSection = "section .text\n";
-    static const std::string globalStart = "global _start\n";
-    static const std::string startLabel = "_start:";
-    static const std::string mov_inst = "mov";
+    class Assembly
+    {
+    private:
+        std::string fileContents;
+        std::string currInstruction;
+        std::string op1;
+        std::string op2;
+        const std::string includeFunctions = "%include 'functions.asm'\n\n";
+        const std::string globals = "global main\nextern printf\n\n";
+        const std::string dataSection = "section .data\n\tsum DQ 0";
+        const std::string textSection = "section .text\n\nmain:\n";
+        const std::string returnFromMain = "\n\tret";
+        const std::string floatFormat = "\n\tfloatfmt db  '%.6g', 10, 0\n\n";
+        const std::string integerFormat = "\n\tintegerfmt db '%d', 10, 0\n\n";
 
-    // inline static std::string mov(std::string reg, std::string val)
-    // {
-    //     std::stringstream ss;
-    //     ss << tab << mov_inst << sp << reg << ", " << sp <<
-    // }
-} // namespace asmembly
+    public:
+        Assembly();
+        ~Assembly();
+
+        void createAssembly(const node::Node<lexer::Token> *node);
+
+        void traverseTree(const node::Node<lexer::Token> *node);
+
+        static std::string asmAdd(std::string operand1, std::string operand2);
+
+        static std::string asmPrintInt();
+        static std::string asmPrintFloat();
+    };
+} // namespace assembly
 
 #endif

@@ -5,15 +5,9 @@
 
 int main(int argc, char *argv[])
 {
-<<<<<<< HEAD
-    filesystem::FileHandler filehandler("/home/rob/Projects/C++/lambda/tests/testfile.lambda");
 
-    parser::Parser parser(filehandler.readFilesLines());
+    parser::Parser parser(filesystem::FileHandler::readFilesLines("/home/rob/Projects/C++/lambda/tests/testfile.lambda"));
     parser.parseLines();
-=======
-	f::FileHandler filehandler("/home/rob/Projects/C++/lambda/tests/testfile.lambda");
 
-	p::Parser parser(filehandler.readFilesLines());
-	parser.parseLines();
->>>>>>> 8a8888b9ebd72cf75f87fa2c2fd842bcfc7f736f
+    // filesystem::FileHandler::writeFile("/home/rob/Projects/C++/lambda/tests/", "");
 }

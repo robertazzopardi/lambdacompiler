@@ -30,6 +30,15 @@ namespace lexer
         opdiv
     };
 
+    // static std::map<Attribute, std::string> attribute{
+    //     {Attribute::integer, "int"},
+    //     {Attribute::lparen, "("},
+    //     {Attribute::rparen, ")"},
+    //     {Attribute::opadd, "+"},
+    //     {Attribute::opsub, "-"},
+    //     {Attribute::opmul, "*"},
+    //     {Attribute::opdiv, "/"}};
+
     enum class Associates
     {
         none,
@@ -56,7 +65,7 @@ namespace lexer
     public:
         Attribute attribute;
         std::string value;
-        char v;
+        // char v;
 
         Token()
         {
@@ -68,11 +77,11 @@ namespace lexer
             value = val;
         }
 
-        Token(Attribute attr, char val)
-        {
-            attribute = attr;
-            v = val;
-        }
+        // Token(Attribute attr, char val)
+        // {
+        //     attribute = attr;
+        //     v = val;
+        // }
 
         friend std::ostream &operator<<(std::ostream &os, const Token &m)
         {
