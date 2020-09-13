@@ -1,5 +1,6 @@
 # gcc
 CC		:= g++
+# CC		:= gcc
 CFLAGS	:= -std=c++20 -Wall -Wextra -g
 
 BIN		:= bin
@@ -39,3 +40,11 @@ run: all
 
 $(BIN)/$(EXECUTABLE): $(OBJECTS)
 	$(CC) $(CFLAGS) $(CINCLUDES) $(CLIBS) $^ -o $@ $(LIBRARIES)
+
+
+
+# CREATE ASSEMBLY FILE AND OUTPUT FILE, LINK, AND RUN
+# nasm assembly.asm -f elf64 -o assembly.o && gcc -no-pie -Wall -Wextra -Werror -o assembly assembly.o && ./assembly
+
+# CREATE ASSEMBLY FILE AND OUTPUT FILE, LINK, REMOVE OUTPUT FILE, AND RUN
+# nasm assembly.asm -f elf64 -o assembly.o && gcc -no-pie -Wall -Wextra -Werror -o assembly assembly.o && rm ./assembly.o && ./assembly

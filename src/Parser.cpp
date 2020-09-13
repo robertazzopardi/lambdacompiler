@@ -3,14 +3,19 @@
 
 namespace parser
 {
-    Parser::Parser(std::vector<std::string> filesLines)
+    std::string Parser::filename = "";
+    std::map<std::string, bool> Parser::flags = {
+        {"-asm", false},
+        {"-run", false}};
+
+    Parser::Parser()
     {
-        lines = filesLines;
+        // lines = filesLines;
     }
 
-    void Parser::parseLines()
+    void Parser::parseLines(std::vector<std::string> filesLines)
     {
-        for (auto &&line : lines)
+        for (auto &&line : filesLines)
         {
             parseLine(line);
         }
@@ -78,6 +83,63 @@ namespace parser
         }
 
         return exp_stack.pop();
+    }
+
+    void Parser::parseArgs(int argc, char *argv[])
+    {
+        // check if there is enough args
+        if (argc == 1)
+        {
+            std::cout << "Too Few Arguements" << std::endl;
+            exit(0);
+        }
+
+        std::vector<std::string> invalidFlags;
+        // loop trailing args
+        for (size_t i = 1; i < argc; i++)
+        {
+            std::string arg(argv[i]);
+
+            // look for file to be compiled
+            // if found set filename
+            auto extensionFound = arg.find(".lambda");
+            if (extensionFound != std::string::npos)
+            {
+                Parser::filename = arg;
+            }
+
+            // check if flags are valid
+            auto it = Parser::flags.find(arg);
+            if (it != Parser::flags.end())
+            {
+                it->second = true;
+            }
+            else
+            {
+                if (arg != filename)
+                {
+                    invalidFlags.push_back(arg);
+                }
+            }
+        }
+
+        if (filename == "")
+        {
+            std::cout << "Expected A .lambda File" << std::endl;
+        }
+        else if (invalidFlags.size() != 0)
+        {
+            std::cout << "Invalid Flags: ";
+            for (auto &&i : invalidFlags)
+            {
+                std::cout << i << " ";
+            }
+            std::cout << std::endl;
+        }
+        else
+        {
+            // std::cout << "fine" << std::endl;
+        }
     }
 
     // void Parser::shuntingYardPreFix(std::vector<std::string> tokens, tree::Tree *tree)

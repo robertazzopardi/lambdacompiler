@@ -5,9 +5,8 @@
 
 int main(int argc, char *argv[])
 {
+    parser::Parser fileParser;
+    fileParser.parseArgs(argc, argv);
 
-    parser::Parser parser(filesystem::FileHandler::readFilesLines("/home/rob/Projects/C++/lambda/tests/testfile.lambda"));
-    parser.parseLines();
-
-    // filesystem::FileHandler::writeFile("/home/rob/Projects/C++/lambda/tests/", "");
+    fileParser.parseLines(filesystem::FileHandler::readFilesLines("/home/rob/Projects/C++/lambda/tests/testfile.lambda"));
 }
