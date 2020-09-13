@@ -129,7 +129,7 @@ namespace parser
         }
         else if (invalidFlags.size() != 0)
         {
-            std::cout << "Invalid Flags: ";
+            std::cout << (invalidFlags.size() == 1 ? "Invalid Arguement: " : "Invalid Arguements: ");
             for (auto &&i : invalidFlags)
             {
                 std::cout << i << " ";
