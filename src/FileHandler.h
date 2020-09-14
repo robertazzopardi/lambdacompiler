@@ -19,13 +19,16 @@
 #define GetCurrentDir getcwd
 #endif
 
-namespace cfile
-{
-    const char *_currentPath();
-} // namespace cfile
-
 namespace fhandler
 {
+    const char *_currentPath();
+
+    struct flagArgs
+    {
+        bool isSet;
+        std::string command;
+    };
+
     class FileHandler
     {
     private:
@@ -33,7 +36,7 @@ namespace fhandler
         static std::string filename;
         static std::string filepath;
         static std::string asmfilename;
-        static std::map<std::string, bool> flags;
+        static std::map<std::string, flagArgs> flags;
 
         FileHandler();
         ~FileHandler();

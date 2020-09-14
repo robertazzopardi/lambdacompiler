@@ -48,3 +48,6 @@ $(BIN)/$(EXECUTABLE): $(OBJECTS)
 
 # CREATE ASSEMBLY FILE AND OUTPUT FILE, LINK, REMOVE OUTPUT FILE, AND RUN
 # nasm assembly.asm -f elf64 -o assembly.o && gcc -no-pie -Wall -Wextra -Werror -o assembly assembly.o && rm ./assembly.o && ./assembly
+
+
+# nasm ./tests/testfile.asm -f elf64 -o ./tests/testfile.o && gcc -no-pie -Wall -Wextra -Werror -o ./tests/testfile ./tests/testfile.o && rm ./tests/testfile.o && ./tests/testfile

@@ -17,7 +17,7 @@ namespace assembly
         std::string currInstruction;
         std::string op1;
         std::string op2;
-        const std::string includeFunctions = "%include '" + std::string(cfile::_currentPath()) + "include/functions.asm'\n\n";
+        const std::string includeFunctions = "%include '" + std::string(fhandler::_currentPath()) + "include/functions.asm'\n\n";
         const std::string globals = "global main\nextern printf\n\n";
         const std::string dataSection = "section .data\n\tsum DQ 0";
         const std::string textSection = "section .text\n\nmain:\n";
@@ -30,11 +30,11 @@ namespace assembly
         ~Assembly();
 
         void createAssembly(const node::Node<lexer::Token> *node);
+        void buildSystemCommands();
 
         void traverseTree(const node::Node<lexer::Token> *node);
 
         static std::string asmAdd(std::string operand1, std::string operand2);
-
         static std::string asmPrintInt();
         static std::string asmPrintFloat();
     };

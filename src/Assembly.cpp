@@ -19,6 +19,61 @@ namespace assembly
         // std::cout << fileContents << std::endl;
 
         fhandler::FileHandler::writeFile(fhandler::FileHandler::asmfilename, fileContents);
+
+        // assemble the file
+        buildSystemCommands();
+    }
+
+    void Assembly::buildSystemCommands()
+    {
+        // nasm ./tests/testfile.asm -f elf64 -o ./tests/testfile.o
+        // gcc -no-pie -Wall -Wextra -Werror -o ./tests/testfile ./tests/testfile.o
+        //  rm ./tests/testfile.o
+        //  ./tests/testfile
+
+        // std::cout << "nasm " + fhandler::FileHandler::asmfilename + " -f elf64" << std::endl;
+        std::string _nasm = "nasm " + fhandler::FileHandler::asmfilename + " -f elf64";
+        system(_nasm.c_str());
+        // std::cout << _nasm.c_str() << std::endl;
+
+        // std::cout << "gcc -no-pie -Wall -Wextra -Werror -o " + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.')) + " " + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.')) + ".o" << std::endl;
+        std::string _linker = "gcc -no-pie -Wall -Wextra -Werror -o " + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.')) + " " + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.')) + ".o";
+        system(_linker.c_str());
+        // std::cout << _linker.c_str() << std::endl;
+
+        // // std::cout
+        // //     << "rm " + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.')) + ".o" << std::endl;
+        // std::string _rmOutput = "rm " + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.')) + ".o";
+        // // system(_rmOutput.c_str());
+        // // std::cout << _rmOutput.c_str() << std::endl;
+
+        // // std::cout
+        // //     << "rm " + fhandler::FileHandler::asmfilename << std::endl;
+        // std::string _rmAsm = "rm " + fhandler::FileHandler::asmfilename;
+        // // system(_rmAsm.c_str());
+        // // std::cout << _rmAsm.c_str() << std::endl;
+
+        // //
+        // std::string _runFile = "./" + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.'));
+        // // system(_runFile.c_str());
+        // // std::cout << _runFile.c_str() << std::endl;
+
+        for (auto &&i : fhandler::FileHandler::flags)
+        {
+            if (i.second.command != "")
+                system(i.second.command.c_str());
+            // std::cout << i.second.command << " " << i.second.isSet << std::endl;
+            // if (!i.second.isSet)
+            // {
+            //     // std::cout << i.first << std::endl;
+            //     system(i.second.command.c_str());
+            // }
+            // else
+            // {
+            //     // std::cout << "dsdadsadasdasasdas" << std::endl;
+            //     system(i.second.command.c_str());
+            // }
+        }
     }
 
     void Assembly::traverseTree(const node::Node<lexer::Token> *node)

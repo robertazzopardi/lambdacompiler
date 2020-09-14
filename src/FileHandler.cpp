@@ -1,6 +1,6 @@
 #include "FileHandler.h"
 
-namespace cfile
+namespace fhandler
 {
     inline const char *_currentPath()
     {
@@ -11,18 +11,15 @@ namespace cfile
 
         return buff + '/';
     }
-} // namespace cfile
-
-namespace fhandler
-{
 
     std::string FileHandler::filename = "";
     std::string FileHandler::filepath = "";
     std::string FileHandler::asmfilename = "";
 
-    std::map<std::string, bool> FileHandler::flags = {
-        {"-asm", false},
-        {"-run", false}};
+    std::map<std::string, flagArgs> FileHandler::flags = {
+        {"-asm", {false, ""}},
+        {"-out", {false, ""}},
+        {"-run", {false, ""}}};
 
     FileHandler::FileHandler()
     {
@@ -98,7 +95,7 @@ namespace fhandler
             {
                 filename = arg;
 
-                std::string path = cfile::_currentPath() + arg;
+                std::string path = _currentPath() + arg;
                 filepath = path;
 
                 auto extpos = path.find(".lambda");
@@ -113,16 +110,39 @@ namespace fhandler
             }
 
             // check if flags are valid
-            auto it = FileHandler::flags.find(arg);
-            if (it != FileHandler::flags.end())
+            auto it = flags.find(arg);
+            if (it != flags.end())
             {
-                it->second = true;
+                it->second.isSet = true;
+                //
             }
             else
             {
                 if (arg != filename)
                 {
                     invalidFlags.push_back(arg);
+                }
+            }
+        }
+
+        for (auto &&i : flags)
+        {
+            if (!i.second.isSet)
+            {
+                if (i.first == "-asm")
+                {
+                    i.second.command = "rm " + fhandler::FileHandler::asmfilename;
+                }
+                else if (i.first == "-out")
+                {
+                    i.second.command = "rm " + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.')) + ".o";
+                }
+            }
+            else
+            {
+                if (i.first == "-run")
+                {
+                    i.second.command = "./" + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.'));
                 }
             }
         }
@@ -143,6 +163,27 @@ namespace fhandler
         else
         {
             // std::cout << "fine" << std::endl;
+            // for (auto &&i : flags)
+            // {
+            //     if (!i.second.isSet)
+            //     {
+            //         if (i.first == "-asm")
+            //         {
+            //             i.second.command = "rm " + fhandler::FileHandler::asmfilename;
+            //         }
+            //         else if (i.first == "-out")
+            //         {
+            //             i.second.command = "rm " + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.')) + ".o";
+            //         }
+            //     }
+            //     else
+            //     {
+            //         if (i.first == "-run")
+            //         {
+            //             i.second.command = "./" + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.'));
+            //         }
+            //     }
+            // }
         }
     }
 
