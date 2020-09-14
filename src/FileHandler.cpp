@@ -187,4 +187,9 @@ namespace fhandler
         }
     }
 
+    int FileHandler::temp(int num)
+    {
+        return num;
+    }
+
 } // namespace fhandler
