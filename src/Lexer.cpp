@@ -62,9 +62,8 @@ namespace lexer
         return out;
     }
 
-    std::vector<lexer::Token> Lexer::lex(const std::string str)
+    std::vector<lexer::Token> Lexer::lex(std::string str)
     {
-
         std::vector<Token> tokens;
         for (auto &&text : split(str))
         {

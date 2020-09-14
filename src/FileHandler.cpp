@@ -1,7 +1,28 @@
 #include "FileHandler.h"
 
-namespace filesystem
+namespace cfile
 {
+    inline const char *_currentPath()
+    {
+        char *buff = (char *)malloc(FILENAME_MAX);
+        // char buff[FILENAME_MAX];
+        GetCurrentDir(buff, FILENAME_MAX);
+        // printf("Current working dir: %s\n", buff);
+
+        return buff + '/';
+    }
+} // namespace cfile
+
+namespace fhandler
+{
+
+    std::string FileHandler::filename = "";
+    std::string FileHandler::filepath = "";
+    std::string FileHandler::asmfilename = "";
+
+    std::map<std::string, bool> FileHandler::flags = {
+        {"-asm", false},
+        {"-run", false}};
 
     FileHandler::FileHandler()
     {
@@ -19,12 +40,17 @@ namespace filesystem
 
         if (file.is_open())
         {
-            while (std::getline(file, line))
+            while (std::getline(file, line)) // move to the lexer function
             {
-                if (line.find("//") == std::string::npos)
+                auto commentPos = line.find("//");
+                if (commentPos == std::string::npos)
                 {
-                    lines.push_back(line);
+                    lines.push_back(line.substr(0, commentPos));
                 }
+                // if (line.find("//") == std::string::npos)
+                // {
+                //     lines.push_back(line);
+                // }
             }
         }
         else
@@ -35,11 +61,10 @@ namespace filesystem
         return lines;
     }
 
-    void FileHandler::writeFile(std::string path, std::string data)
+    void FileHandler::writeFile(const std::string filePath, std::string data)
     {
-        const std::string assemblyFileName = "assembly.asm";
 
-        std::ofstream myfile(path + assemblyFileName);
+        std::ofstream myfile(filePath);
         if (myfile.is_open())
         {
             myfile << data;
@@ -50,4 +75,75 @@ namespace filesystem
             std::cout << "Unable to open file";
         }
     }
-} // namespace filesystem
+
+    void FileHandler::parseArgs(int argc, char *argv[])
+    {
+        // check if there is enough args
+        if (argc == 1)
+        {
+            std::cout << "Too Few Arguements" << std::endl;
+            exit(0);
+        }
+
+        std::vector<std::string> invalidFlags;
+        // loop trailing args
+        for (size_t i = 1; i < argc; i++)
+        {
+            std::string arg(argv[i]);
+
+            // look for file to be compiled
+            // if found set filename
+            auto extensionFound = arg.find(".lambda");
+            if (extensionFound != std::string::npos)
+            {
+                filename = arg;
+
+                std::string path = cfile::_currentPath() + arg;
+                filepath = path;
+
+                auto extpos = path.find(".lambda");
+                if (extpos != std::string::npos)
+                {
+                    asmfilename = path.replace(extpos, path.size() - 1, ".asm");
+                }
+                else
+                {
+                    std::cout << "error" << std::endl;
+                }
+            }
+
+            // check if flags are valid
+            auto it = FileHandler::flags.find(arg);
+            if (it != FileHandler::flags.end())
+            {
+                it->second = true;
+            }
+            else
+            {
+                if (arg != filename)
+                {
+                    invalidFlags.push_back(arg);
+                }
+            }
+        }
+
+        if (filename == "")
+        {
+            std::cout << "Expected A .lambda File" << std::endl;
+        }
+        else if (invalidFlags.size() != 0)
+        {
+            std::cout << (invalidFlags.size() == 1 ? "Invalid Arguement: " : "Invalid Arguements: ");
+            for (auto &&i : invalidFlags)
+            {
+                std::cout << i << " ";
+            }
+            std::cout << std::endl;
+        }
+        else
+        {
+            // std::cout << "fine" << std::endl;
+        }
+    }
+
+} // namespace fhandler

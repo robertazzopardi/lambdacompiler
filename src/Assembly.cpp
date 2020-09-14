@@ -12,11 +12,13 @@ namespace assembly
 
     void Assembly::createAssembly(const node::Node<lexer::Token> *node)
     {
+
         fileContents = includeFunctions + globals + dataSection + integerFormat + textSection;
         traverseTree(node);
         fileContents += returnFromMain;
         // std::cout << fileContents << std::endl;
-        filesystem::FileHandler::writeFile("/home/rob/Projects/C++/lambda/tests/", fileContents);
+
+        fhandler::FileHandler::writeFile(fhandler::FileHandler::asmfilename, fileContents);
     }
 
     void Assembly::traverseTree(const node::Node<lexer::Token> *node)

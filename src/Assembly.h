@@ -17,7 +17,7 @@ namespace assembly
         std::string currInstruction;
         std::string op1;
         std::string op2;
-        const std::string includeFunctions = "%include 'functions.asm'\n\n";
+        const std::string includeFunctions = "%include '" + std::string(cfile::_currentPath()) + "include/functions.asm'\n\n";
         const std::string globals = "global main\nextern printf\n\n";
         const std::string dataSection = "section .data\n\tsum DQ 0";
         const std::string textSection = "section .text\n\nmain:\n";

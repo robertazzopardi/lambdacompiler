@@ -5,8 +5,11 @@
 
 int main(int argc, char *argv[])
 {
-    parser::Parser fileParser;
-    fileParser.parseArgs(argc, argv);
+    fhandler::FileHandler::parseArgs(argc, argv);
 
-    fileParser.parseLines(filesystem::FileHandler::readFilesLines("/home/rob/Projects/C++/lambda/tests/testfile.lambda"));
+    parser::Parser parser;
+    // parser.parseLines(filesystem::FileHandler::readFilesLines("/home/rob/Projects/C++/lambda/tests/testfile.lambda"));
+
+    auto lines = fhandler::FileHandler::readFilesLines(fhandler::FileHandler::filepath);
+    parser.parseLines(lines);
 }

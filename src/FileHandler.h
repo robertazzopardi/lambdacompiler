@@ -6,18 +6,43 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <map>
 
-namespace filesystem
+#include <stdlib.h>
+#include <stdio.h> /* defines FILENAME_MAX */
+//#define WINDOWS  /* uncomment this line to use it for windows.*/
+#ifdef WINDOWS
+#include <direct.h>
+#define GetCurrentDir _getcwd
+#else
+#include <unistd.h>
+#define GetCurrentDir getcwd
+#endif
+
+namespace cfile
+{
+    const char *_currentPath();
+} // namespace cfile
+
+namespace fhandler
 {
     class FileHandler
     {
     private:
     public:
+        static std::string filename;
+        static std::string filepath;
+        static std::string asmfilename;
+        static std::map<std::string, bool> flags;
+
         FileHandler();
         ~FileHandler();
         static std::vector<std::string> readFilesLines(std::string path);
-        static void writeFile(std::string path, std::string data);
+        static void writeFile(const std::string filePath, std::string data);
+
+        static void parseArgs(int argc, char *argv[]);
+
     }; // class FileHandler
-} // namespace filesystem
+} // namespace fhandler
 
 #endif

@@ -1,4 +1,4 @@
-%include 'functions.asm'
+%include 'include/functions.asm'
 
 global main
 extern printf

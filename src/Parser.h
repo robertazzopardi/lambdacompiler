@@ -20,11 +20,8 @@ namespace parser
         std::vector<std::string> lines;
 
     public:
-        static std::string filename;
-        static std::map<std::string, bool> flags;
-
         // constructs a parser object from the lines of a file
-        Parser(/*std::vector<std::string> filesLines*/);
+        Parser();
 
         // parses the lines from the file
         void parseLines(std::vector<std::string> filesLines);
@@ -39,8 +36,6 @@ namespace parser
         // parses the tokens using the shunting yard algorithm
         // returns a node with the pre fix representation of the expression
         // void shuntingYardPreFix(std::vector<std::string> line, tr::Tree *tree);
-
-        void parseArgs(int argc, char *argv[]);
     };
 } // namespace parser
 

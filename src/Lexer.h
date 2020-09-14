@@ -65,7 +65,6 @@ namespace lexer
     public:
         Attribute attribute;
         std::string value;
-        // char v;
 
         Token()
         {
@@ -76,12 +75,6 @@ namespace lexer
             attribute = attr;
             value = val;
         }
-
-        // Token(Attribute attr, char val)
-        // {
-        //     attribute = attr;
-        //     v = val;
-        // }
 
         friend std::ostream &operator<<(std::ostream &os, const Token &m)
         {
