@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "../src/FileHandler.h"
+#include "../src/Parser.h"
 
 TEST(exampletest, test1)
 {
@@ -7,5 +7,5 @@ TEST(exampletest, test1)
     //act
     //assert
 
-    // EXPECT_EQ(fhandler::FileHandler::temp(1), 1);
+    // EXPECT_EQ(parser::Parser::, 1);
 }

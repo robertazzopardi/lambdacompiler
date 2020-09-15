@@ -45,7 +45,6 @@ namespace fhandler
 
         static void parseArgs(int argc, char *argv[]);
 
-        static int temp(int num);
     }; // class FileHandler
 } // namespace fhandler
 

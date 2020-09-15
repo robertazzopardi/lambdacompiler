@@ -162,34 +162,7 @@ namespace fhandler
         }
         else
         {
-            // std::cout << "fine" << std::endl;
-            // for (auto &&i : flags)
-            // {
-            //     if (!i.second.isSet)
-            //     {
-            //         if (i.first == "-asm")
-            //         {
-            //             i.second.command = "rm " + fhandler::FileHandler::asmfilename;
-            //         }
-            //         else if (i.first == "-out")
-            //         {
-            //             i.second.command = "rm " + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.')) + ".o";
-            //         }
-            //     }
-            //     else
-            //     {
-            //         if (i.first == "-run")
-            //         {
-            //             i.second.command = "./" + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.'));
-            //         }
-            //     }
-            // }
         }
-    }
-
-    int FileHandler::temp(int num)
-    {
-        return num;
     }
 
 } // namespace fhandler
