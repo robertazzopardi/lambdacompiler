@@ -79,8 +79,9 @@ namespace assembly
     void Assembly::traverseTree(const node::Node<lexer::Token> *node)
     {
         if (node == nullptr)
+        {
             return;
-
+        }
         /* first print data of node */
         // std::cout << node->data << " ";
         // std::cout << node->data.value << " " << std::endl;

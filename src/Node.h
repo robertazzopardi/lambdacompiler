@@ -20,6 +20,13 @@ namespace node
             this->data = value;
             this->leftNode = this->rightNode = nullptr;
         };
+
+        Node(T func, Node *right)
+        {
+            this->data = func;
+            this->rightNode = right;
+        }
+
         Node(T op, Node *left, Node *right)
         {
             this->data = op;

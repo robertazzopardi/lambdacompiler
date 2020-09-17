@@ -73,7 +73,7 @@ namespace fhandler
         }
     }
 
-    void FileHandler::parseArgs(int argc, char *argv[])
+    void FileHandler::parseArgs(int argc, char **argv)
     {
         // check if there is enough args
         if (argc == 1)

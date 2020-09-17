@@ -27,7 +27,8 @@ namespace lexer
         opadd,
         opsub,
         opmul,
-        opdiv
+        opdiv,
+        print
     };
 
     // static std::map<Attribute, std::string> attribute{
@@ -59,28 +60,39 @@ namespace lexer
         {"+", {2, Associates::left_to_right}},
         {"-", {2, Associates::left_to_right}}};
 
-    class Token
+    struct Token
     {
-    private:
-    public:
         Attribute attribute;
         std::string value;
-
-        Token()
-        {
-        }
-
-        Token(Attribute attr, std::string val)
-        {
-            attribute = attr;
-            value = val;
-        }
 
         friend std::ostream &operator<<(std::ostream &os, const Token &m)
         {
             return os << m.value;
         }
     };
+
+    // class Token
+    // {
+    // private:
+    // public:
+    //     Attribute attribute;
+    //     std::string value;
+
+    //     Token()
+    //     {
+    //     }
+
+    //     Token(Attribute attr, std::string val)
+    //     {
+    //         attribute = attr;
+    //         value = val;
+    //     }
+
+    //     friend std::ostream &operator<<(std::ostream &os, const Token &m)
+    //     {
+    //         return os << m.value;
+    //     }
+    // };
 
     class Lexer
     {
@@ -99,9 +111,9 @@ namespace lexer
 
         static bool isRightBracket(const char &val);
 
-        // static bool isInteger(const std::string &s);
+        static bool isInteger(const std::string &s);
 
-        static bool isInt(const std::string s);
+        // static bool isInt(const std::string s);
 
         // split line at spaces
         static std::vector<std::string> split(std::string line);

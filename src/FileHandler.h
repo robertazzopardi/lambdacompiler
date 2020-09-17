@@ -43,7 +43,7 @@ namespace fhandler
         static std::vector<std::string> readFilesLines(std::string path);
         static void writeFile(const std::string filePath, std::string data);
 
-        static void parseArgs(int argc, char *argv[]);
+        static void parseArgs(int argc, char **argv);
 
     }; // class FileHandler
 } // namespace fhandler

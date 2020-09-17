@@ -10,27 +10,48 @@ namespace parser
 
     void Parser::parseLines(std::vector<std::string> filesLines)
     {
+        // for (auto &&line : filesLines)
+        // {
+        //     parseLine(line);
+        // }
+
         for (auto &&line : filesLines)
         {
-            parseLine(line);
+            std::vector<lexer::Token> words = lexer::Lexer::lex(line);
+
+            // for (auto &&i : words)
+            // {
+            //     std::cout << i.value << std::endl;
+            // }
+
+            tree::Tree *tree = new tree::Tree();
+            tree->curr = shuntingYardPostFix(words);
+
+            tree->printPreorder(tree->curr);
+            std::cout << std::endl;
+
+            // assembly::Assembly assembler;
+            // assembler.createAssembly(tree->curr);
+
+            // tree->printTreeHelper(tree);
         }
     }
 
-    void Parser::parseLine(std::string line)
-    {
-        std::vector<lexer::Token> words = lexer::Lexer::lex(line);
+    // void Parser::parseLine(std::string line)
+    // {
+    //     // std::vector<lexer::Token> words = lexer::Lexer::lex(line);
 
-        tree::Tree *tree = new tree::Tree();
-        tree->curr = shuntingYardPostFix(words);
+    //     // tree::Tree *tree = new tree::Tree();
+    //     // tree->curr = shuntingYardPostFix(words);
 
-        // tree->printPreorder(tree->curr);
-        // std::cout << std::endl;
+    //     // tree->printPreorder(tree->curr);
+    //     // std::cout << std::endl;
 
-        assembly::Assembly assembler;
-        assembler.createAssembly(tree->curr);
+    //     // // assembly::Assembly assembler;
+    //     // // assembler.createAssembly(tree->curr);
 
-        // tree->printTreeHelper(tree);
-    }
+    //     // // tree->printTreeHelper(tree);
+    // }
 
     // template <class T>
     node::Node<lexer::Token> *Parser::shuntingYardPostFix(std::vector<lexer::Token> tokens)
@@ -40,10 +61,18 @@ namespace parser
 
         for (auto &&token : tokens)
         {
-            if (lexer::Lexer::isInt(token.value))
+            if (lexer::Lexer::isInteger(token.value))
             {
                 exp_stack.push_back(new node::Node<lexer::Token>(token));
             }
+
+            else if (token.attribute == lexer::Attribute::print)
+            {
+                // std::cout << token << " ";
+                // exp_stack.push_back(new node::Node<lexer::Token>(token));
+                op_stack.push(token);
+            }
+
             else if (lexer::Lexer::isOperator(token.value) || lexer::Lexer::isBracket(*token.value.c_str()))
             {
                 if (!lexer::Lexer::isLeftBracket(*token.value.c_str()))
@@ -66,15 +95,25 @@ namespace parser
             }
             else
             {
-                std::cout << "";
+                // std::cout << "";
             }
         }
+
         while (!op_stack.empty())
         {
             lexer::Token op = op_stack.pop();
-            node::Node<lexer::Token> *e2 = exp_stack.pop();
-            node::Node<lexer::Token> *e1 = exp_stack.pop();
-            exp_stack.push(new node::Node<lexer::Token>(op, e1, e2));
+            if (op.attribute == lexer::Attribute::print)
+            {
+                node::Node<lexer::Token> *e = exp_stack.pop();
+                exp_stack.push(new node::Node<lexer::Token>(op, e));
+            }
+            else
+            {
+
+                node::Node<lexer::Token> *e2 = exp_stack.pop();
+                node::Node<lexer::Token> *e1 = exp_stack.pop();
+                exp_stack.push(new node::Node<lexer::Token>(op, e1, e2));
+            }
         }
 
         return exp_stack.pop();
