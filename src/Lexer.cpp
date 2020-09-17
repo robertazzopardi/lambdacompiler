@@ -51,6 +51,14 @@ namespace lexer
         return (*p == 0);
     }
 
+    bool Lexer::isFunction(const std::string value)
+    {
+        if (value == "print")
+            return true;
+
+        return false;
+    }
+
     std::vector<std::string> Lexer::split(std::string line)
     {
         // Used to split string at spaces;
@@ -69,8 +77,13 @@ namespace lexer
         for (auto &&text : split(str))
         {
 
-            // if (text.find("print"))
-            if (text.find('(') != std::string::npos)
+            if (isInteger(text))
+            {
+                // Token token(Attribute::integer, text);
+                Token token = {Attribute::integer, text};
+                tokens.push_back(token);
+            }
+            else if (text.find('(') != std::string::npos)
             {
                 while (text.find('(') != std::string::npos)
                 {
@@ -103,13 +116,8 @@ namespace lexer
                 Token token = {Attribute::opadd, text};
                 tokens.push_back(token);
             }
-            else if (isInteger(text))
-            {
-                // Token token(Attribute::integer, text);
-                Token token = {Attribute::integer, text};
-                tokens.push_back(token);
-            }
-            else if ("print" == text)
+
+            else if (isFunction(text))
             {
                 Token token = {Attribute::print, text};
                 tokens.push_back(token);

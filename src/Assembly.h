@@ -15,8 +15,10 @@ namespace assembly
     private:
         std::string fileContents;
         std::string currInstruction;
-        std::string op1;
-        std::string op2;
+        std::string val1;
+        std::string val2;
+        std::string op;
+        std::string function;
         const std::string includeFunctions = "%include '" + std::string(fhandler::_currentPath()) + "lib/functions.asm'\n\n";
         const std::string globals = "global main\nextern printf\n\n";
         const std::string dataSection = "section .data\n\tsum DQ 0";
@@ -34,9 +36,9 @@ namespace assembly
 
         void traverseTree(const node::Node<lexer::Token> *node);
 
-        static std::string asmAdd(std::string operand1, std::string operand2);
-        static std::string asmPrintInt();
-        static std::string asmPrintFloat();
+        // static std::string asmAdd(std::string operand1, std::string operand2);
+        // static std::string asmPrintInt();
+        // static std::string asmPrintFloat();
     };
 } // namespace assembly
 

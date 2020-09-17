@@ -113,6 +113,8 @@ namespace lexer
 
         static bool isInteger(const std::string &s);
 
+        static bool isFunction(const std::string value);
+
         // static bool isInt(const std::string s);
 
         // split line at spaces

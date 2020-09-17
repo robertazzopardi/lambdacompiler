@@ -15,16 +15,17 @@ namespace node
         {
             leftNode = rightNode = parentNode = nullptr;
         };
+
         Node(T value)
         {
             this->data = value;
             this->leftNode = this->rightNode = nullptr;
         };
 
-        Node(T func, Node *right)
+        Node(T func, Node *left)
         {
             this->data = func;
-            this->rightNode = right;
+            this->leftNode = left;
         }
 
         Node(T op, Node *left, Node *right)
@@ -33,6 +34,7 @@ namespace node
             this->leftNode = left;
             this->rightNode = right;
         };
+
         ~Node()
         {
             delete leftNode, rightNode, parentNode;

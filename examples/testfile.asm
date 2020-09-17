@@ -10,7 +10,7 @@ section .data
 section .text
 
 main:
-	_add 1, 102, qword [sum]
+	_add 1, 2, qword [sum]
 	print_sum qword [sum], integerfmt
 
 	ret

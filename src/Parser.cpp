@@ -17,23 +17,23 @@ namespace parser
 
         for (auto &&line : filesLines)
         {
+            // lex the words on the line
             std::vector<lexer::Token> words = lexer::Lexer::lex(line);
 
-            // for (auto &&i : words)
-            // {
-            //     std::cout << i.value << std::endl;
-            // }
-
+            // create tree with shunting yard algorithm
             tree::Tree *tree = new tree::Tree();
             tree->curr = shuntingYardPostFix(words);
 
-            tree->printPreorder(tree->curr);
+            // print the tree for debugging
+            tree->printPostorder(tree->curr);
             std::cout << std::endl;
 
-            // assembly::Assembly assembler;
-            // assembler.createAssembly(tree->curr);
-
+            // pretty print tree
             // tree->printTreeHelper(tree);
+
+            // create assembly file
+            assembly::Assembly assembler;
+            assembler.createAssembly(tree->curr);
         }
     }
 
@@ -109,7 +109,6 @@ namespace parser
             }
             else
             {
-
                 node::Node<lexer::Token> *e2 = exp_stack.pop();
                 node::Node<lexer::Token> *e1 = exp_stack.pop();
                 exp_stack.push(new node::Node<lexer::Token>(op, e1, e2));
