@@ -22,10 +22,15 @@ namespace node
             this->leftNode = this->rightNode = nullptr;
         };
 
-        Node(T func, Node *left)
+        // Node(T func, Node *left)
+        // {
+        //     this->data = func;
+        //     this->leftNode = left;
+        // }
+        Node(T func, Node *right)
         {
             this->data = func;
-            this->leftNode = left;
+            this->rightNode = right;
         }
 
         Node(T op, Node *left, Node *right)

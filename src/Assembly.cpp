@@ -108,14 +108,14 @@ namespace assembly
             break;
 
         default:
-            // std::cout << node->data.value << std::endl;
+            std::cout << node->data.value << std::endl;
             break;
         }
 
         if (op != "" && val2 != "")
         {
             fileContents += "\t_add " + val1 + ", " + val2 + ", qword [sum]\n";
-            op, val1, val2 = "";
+            op = val1 = val2 = "";
         }
 
         if (function != "")

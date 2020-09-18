@@ -15,26 +15,52 @@ namespace parser
         //     parseLine(line);
         // }
 
+        // for (auto &&line : filesLines)
+        // {
+        //     // lex the words on the line
+        //     std::vector<lexer::Token> words = lexer::Lexer::lex(line);
+
+        //     // create tree with shunting yard algorithm
+        //     tree::Tree *tree = new tree::Tree();
+        //     tree->curr = shuntingYardPostFix(words);
+
+        //     // print the tree for debugging
+        //     tree->printPostorder(tree->curr);
+        //     std::cout << std::endl;
+
+        //     // pretty print tree
+        //     // tree->printTreeHelper(tree);
+
+        //     // create assembly file
+        //     assembly::Assembly assembler;
+        //     assembler.createAssembly(tree->curr);
+        // }
+
+        std::vector<lexer::Token> words;
         for (auto &&line : filesLines)
         {
-            // lex the words on the line
-            std::vector<lexer::Token> words = lexer::Lexer::lex(line);
-
-            // create tree with shunting yard algorithm
-            tree::Tree *tree = new tree::Tree();
-            tree->curr = shuntingYardPostFix(words);
-
-            // print the tree for debugging
-            tree->printPostorder(tree->curr);
-            std::cout << std::endl;
-
-            // pretty print tree
-            // tree->printTreeHelper(tree);
-
-            // create assembly file
-            assembly::Assembly assembler;
-            assembler.createAssembly(tree->curr);
+            std::vector<lexer::Token> tokens = lexer::Lexer::lex(line);
+            words.insert(words.end(), tokens.begin(), tokens.end());
         }
+        // for (auto &&i : words)
+        // {
+        //     std::cout << i << std::endl;
+        // }
+
+        // create tree with shunting yard algorithm
+        tree::Tree *tree = new tree::Tree();
+        tree->curr = shuntingYardPostFix(words);
+
+        // print the post order tree
+        tree->printPostorder(tree->curr);
+        std::cout << std::endl;
+
+        // pretty print tree
+        // tree->printTreeHelper(tree);
+
+        // create assembly file
+        assembly::Assembly assembler;
+        assembler.createAssembly(tree->curr);
     }
 
     // void Parser::parseLine(std::string line)
@@ -61,16 +87,25 @@ namespace parser
 
         for (auto &&token : tokens)
         {
+            // std::cout << token << std::endl;
             if (lexer::Lexer::isInteger(token.value))
             {
-                exp_stack.push_back(new node::Node<lexer::Token>(token));
+                exp_stack.push(new node::Node<lexer::Token>(token));
             }
 
             else if (token.attribute == lexer::Attribute::print)
             {
-                // std::cout << token << " ";
-                // exp_stack.push_back(new node::Node<lexer::Token>(token));
-                op_stack.push(token);
+                // op_stack.push(token);
+
+                if (exp_stack.size() > 0)
+                {
+                    node::Node<lexer::Token> *e = exp_stack.pop();
+                    exp_stack.push(new node::Node<lexer::Token>(token, e));
+                }
+                else
+                {
+                    op_stack.push(token);
+                }
             }
 
             else if (lexer::Lexer::isOperator(token.value) || lexer::Lexer::isBracket(*token.value.c_str()))
@@ -102,17 +137,17 @@ namespace parser
         while (!op_stack.empty())
         {
             lexer::Token op = op_stack.pop();
-            if (op.attribute == lexer::Attribute::print)
-            {
-                node::Node<lexer::Token> *e = exp_stack.pop();
-                exp_stack.push(new node::Node<lexer::Token>(op, e));
-            }
-            else
-            {
-                node::Node<lexer::Token> *e2 = exp_stack.pop();
-                node::Node<lexer::Token> *e1 = exp_stack.pop();
-                exp_stack.push(new node::Node<lexer::Token>(op, e1, e2));
-            }
+            // if (op.attribute == lexer::Attribute::print)
+            // {
+            //     node::Node<lexer::Token> *e = exp_stack.pop();
+            //     exp_stack.push(new node::Node<lexer::Token>(op, e));
+            // }
+            // else
+            // {
+            node::Node<lexer::Token> *e2 = exp_stack.pop();
+            node::Node<lexer::Token> *e1 = exp_stack.pop();
+            exp_stack.push(new node::Node<lexer::Token>(op, e1, e2));
+            // }
         }
 
         return exp_stack.pop();

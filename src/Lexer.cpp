@@ -92,8 +92,11 @@ namespace lexer
                     text = text.substr(1, text.length());
                 }
                 // Token token(Attribute::lparen, text);
-                Token token = {Attribute::lparen, text};
-                tokens.push_back(token);
+                if (text != "")
+                {
+                    Token token = {Attribute::lparen, text};
+                    tokens.push_back(token);
+                }
 
             } // found
             else if (text.find(')') != std::string::npos)
@@ -107,8 +110,11 @@ namespace lexer
                     text = text.substr(0, text.length() - 1);
                 }
                 // Token token(Attribute::rparen, text);
-                Token token = {Attribute::rparen, text};
-                tokens.push_back(token);
+                if (text != "")
+                {
+                    Token token = {Attribute::rparen, text};
+                    tokens.push_back(token);
+                }
             }
             else if (isOperator(text))
             {
