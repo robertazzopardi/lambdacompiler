@@ -55,6 +55,10 @@ namespace lexer
     {
         if (value == "print")
             return true;
+        else if (value == "sin")
+            return true;
+        else if (value == "max")
+            return true;
 
         return false;
     }
@@ -135,6 +139,7 @@ namespace lexer
                 // not found
                 for (auto &&i : text)
                 {
+
                     std::stringstream ss;
                     std::string s;
                     ss << i;
