@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 #include "FileHandler.h"
 #include "Tree.h"
@@ -19,6 +20,7 @@ namespace assembly
         std::string val2;
         std::string op;
         std::string function;
+        std::string printFunction;
         const std::string includeFunctions = "%include '" + std::string(fhandler::_currentPath()) + "lib/functions.asm'\n\n";
         const std::string globals = "global main\nextern printf\n\n";
         const std::string dataSection = "section .data\n\tsum DQ 0";
@@ -27,18 +29,22 @@ namespace assembly
         const std::string floatFormat = "\n\tfloatfmt db  '%.6g', 10, 0\n\n";
         const std::string integerFormat = "\n\tintegerfmt db '%d', 10, 0\n\n";
 
+        const std::map<std::string, std::string> operatorMap{
+            {"+", "_add"},
+            {"-", "_sub"},
+            {"*", "_mul"},
+            {"/", "_div"},
+            {"^", "_ipow"}};
+
     public:
         Assembly();
         ~Assembly();
 
-        void createAssembly(const node::Node<lexer::Token> *node);
+        // void createAssembly(const node::Node<lexer::Token> *node);
+        void createAssembly(const std::vector<tree::Tree *> trees);
         void buildSystemCommands();
 
         void traverseTree(const node::Node<lexer::Token> *node);
-
-        // static std::string asmAdd(std::string operand1, std::string operand2);
-        // static std::string asmPrintInt();
-        // static std::string asmPrintFloat();
     };
 } // namespace assembly
 

@@ -10,11 +10,15 @@ namespace assembly
     {
     }
 
-    void Assembly::createAssembly(const node::Node<lexer::Token> *node)
+    void Assembly::createAssembly(const std::vector<tree::Tree *> trees)
     {
 
         fileContents = includeFunctions + globals + dataSection + integerFormat + textSection;
-        traverseTree(node);
+        // traverseTree(node);
+        for (auto &&tree : trees)
+        {
+            traverseTree(tree->root);
+        }
 
         fileContents += returnFromMain;
         // std::cout << std::endl
@@ -25,6 +29,22 @@ namespace assembly
         // assemble the file
         buildSystemCommands();
     }
+
+    // void Assembly::createAssembly(const node::Node<lexer::Token> *node)
+    // {
+
+    //     fileContents = includeFunctions + globals + dataSection + integerFormat + textSection;
+    //     traverseTree(node);
+
+    //     fileContents += returnFromMain;
+    //     // std::cout << std::endl
+    //     //           << fileContents << std::endl;
+
+    //     fhandler::FileHandler::writeFile(fhandler::FileHandler::asmfilename, fileContents);
+
+    //     // assemble the file
+    //     buildSystemCommands();
+    // }
 
     void Assembly::buildSystemCommands()
     {
@@ -85,58 +105,101 @@ namespace assembly
             return;
         }
 
-        traverseTree(node->leftNode);
-        traverseTree(node->rightNode);
-
         // std::cout << node->data.value << " " << std::endl;
 
         switch (node->data.attribute)
         {
-        case lexer::Attribute::op:
-            op = node->data.value;
+        case lexer::Attribute::func:
+            if (node->data.value == "print")
+            {
+                printFunction = node->data.value;
+            }
+            else
+            {
+                function = node->data.value;
+            }
             break;
-
         case lexer::Attribute::integer:
             if (val1 == "")
+            {
                 val1 = node->data.value;
+            }
             else
+            {
                 val2 = node->data.value;
+            }
             break;
-
-        case lexer::Attribute::func:
-            function += "print_sum qword [sum], integerfmt\n";
+        case lexer::Attribute::floatpt:
+            if (val1 == "")
+            {
+                val1 = node->data.value;
+            }
+            else
+            {
+                val2 = node->data.value;
+            }
             break;
+        case lexer::Attribute::op:
+            switch (*node->data.value.c_str())
+            {
+            case '+':
+                // std::cout << "FGASDJGSHF" << std::endl;
+                op = node->data.value;
+                break;
 
+            case '-':
+                // std::cout << "FGASDJGSHF" << std::endl;
+                op = node->data.value;
+                break;
+
+            case '*':
+                // std::cout << "FGASDJGSHF" << std::endl;
+                op = node->data.value;
+                break;
+
+            case '/':
+                // std::cout << "FGASDJGSHF" << std::endl;
+                op = node->data.value;
+                break;
+
+            case '^':
+                // std::cout << "FGASDJGSHF" << std::endl;
+                op = node->data.value;
+                break;
+
+            default:
+                break;
+            }
+            break;
         default:
-            std::cout << node->data.value << std::endl;
             break;
         }
 
         if (op != "" && val2 != "")
         {
-            fileContents += "\t_add " + val1 + ", " + val2 + ", qword [sum]\n";
-            op = val1 = val2 = "";
+            if (op == "^")
+            {
+                fileContents += "\tmov r8, " + val1 + "\n\tmov r9, " + val2 + "\n";
+                fileContents += "\tcall " + operatorMap.at(op) + "\n";
+                fileContents += "\tmov [sum], rax\n";
+            }
+            else
+            {
+                fileContents += "\t" + operatorMap.at(op);
+                fileContents += " " + val1 + ", " + val2 + ", qword [sum]\n";
+            }
+            if (printFunction != "")
+            {
+                fileContents += "\tprint_sum [sum], integerfmt\n\n";
+                printFunction = "";
+            }
+            val1 = val2 = op = "";
         }
 
-        if (function != "")
-        {
-            fileContents += "\tprint_sum qword [sum], integerfmt\n";
-            function = "";
-        }
+        // if ()
+
+        traverseTree(node->leftNode);
+        traverseTree(node->rightNode);
     }
 
-    // static std::string asmAdd(std::string operand1, std::string operand2)
-    // {
-    //     return "_add " + operand1 + ", " + operand2 + ", qword [sum]";
-    // }
-
-    // static std::string asmPrintInt()
-    // {
-    //     return "print_sum qword [sum], integerfmt";
-    // }
-
-    // static std::string asmPrintFloat()
-    // {
-    //     return "print_sum qword [sum], floatfmt";
-    // }
 } // namespace assembly

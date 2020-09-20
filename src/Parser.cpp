@@ -10,52 +10,57 @@ namespace parser
 
     void Parser::parseLines(std::vector<std::string> filesLines)
     {
-        for (auto &&line : filesLines)
-        {
-            // lex the words on the line
-            std::vector<lexer::Token> words = lexer::Lexer::lex(line);
-
-            // // create tree with shunting yard algorithm
-            tree::Tree *tree = new tree::Tree();
-            tree->curr = shuntingYardPostFix(words);
-
-            // // // print the tree for debugging
-            tree->printPostorder(tree->curr);
-            std::cout << std::endl;
-
-            // pretty print tree
-            tree->printTreeHelper(tree);
-
-            // create assembly file
-            // assembly::Assembly assembler;
-            // assembler.createAssembly(tree->curr);
-
-            std::cout << std::endl
-                      << std::endl;
-        }
-
-        // std::vector<lexer::Token> words;
         // for (auto &&line : filesLines)
         // {
-        //     std::vector<lexer::Token> tokens = lexer::Lexer::lex(line);
-        //     words.insert(words.end(), tokens.begin(), tokens.end());
+        //     // lex the words on the line
+        //     std::vector<lexer::Token> words = lexer::Lexer::lex(line);
+
+        //     // // create tree with shunting yard algorithm
+        //     tree::Tree *tree = new tree::Tree();
+        //     tree->curr = shuntingYardPostFix(words);
+
+        //     // // // print the tree for debugging
+        //     // tree->printPostorder(tree->curr);
+        //     // tree->printPreorder(tree->curr);
+        //     // std::cout << std::endl;
+
+        //     // pretty print tree
+        //     // tree->printTreeHelper(tree);
+
+        //     // create assembly file
+        //     assembly::Assembly assembler;
+        //     assembler.createAssembly(tree->curr);
+
+        //     std::cout << std::endl
+        //               << std::endl;
         // }
 
-        // // create tree with shunting yard algorithm
-        // tree::Tree *tree = new tree::Tree();
-        // tree->curr = shuntingYardPostFix(words);
+        std::vector<tree::Tree *> trees;
+        // std::vector<lexer::Token> words;
+        for (auto &&line : filesLines)
+        {
+            std::vector<lexer::Token> tokens = lexer::Lexer::lex(line);
+            // words.insert(words.end(), tokens.begin(), tokens.end());
 
-        // // print the post order tree
-        // tree->printPostorder(tree->curr);
-        // // tree->printPreorder(tree->curr);
-        // std::cout << std::endl;
+            // create tree with shunting yard algorithm
+            tree::Tree *tree = new tree::Tree();
+            tree->root = shuntingYardPostFix(tokens);
 
-        // pretty print tree
+            // print the post order tree
+            tree->printPostorder(tree->root);
+            // tree->printPreorder(tree->curr);
+            std::cout << std::endl;
+
+            trees.push_back(tree);
+        }
+
+        // // pretty print tree
         // tree->printTreeHelper(tree);
 
-        // create assembly file
-        // assembly::Assembly assembler;
+        // // create assembly file
+        assembly::Assembly assembler;
         // assembler.createAssembly(tree->curr);
+        assembler.createAssembly(trees);
     }
 
     // template <class T>
@@ -66,13 +71,10 @@ namespace parser
 
         for (auto &&token : tokens)
         {
-            // std::cout << token << std::endl;
-            // if (lexer::Lexer::isInteger(token.value))
             if (token.attribute == lexer::Attribute::floatpt || token.attribute == lexer::Attribute::integer)
             {
                 output_stack.push(new node::Node<lexer::Token>(token));
             }
-
             else if (token.attribute == lexer::Attribute::func)
             {
                 // operator_stack.push(token);
@@ -87,14 +89,14 @@ namespace parser
                     operator_stack.push(token);
                 }
             }
-
             // else if (lexer::Lexer::isOperator(*token.value.c_str()) || lexer::Lexer::isBracket(*token.value.c_str()))
             else if (token.attribute == lexer::Attribute::op || token.attribute == lexer::Attribute::lparen || token.attribute == lexer::Attribute::rparen)
             {
                 // if (!lexer::Lexer::isLeftBracket(*token.value.c_str()))
                 if (token.attribute != lexer::Attribute::lparen)
                 {
-                    while (!operator_stack.empty() && ((lexer::Lexer::isRightBracket(*token.value.c_str()) && !lexer::Lexer::isLeftBracket(*operator_stack.top().value.c_str())) || (lexer::operators[*operator_stack.top().value.c_str()].precedence > lexer::operators[*token.value.c_str()].precedence) || ((lexer::operators[*operator_stack.top().value.c_str()].precedence == lexer::operators[*token.value.c_str()].precedence) && (lexer::operators[*token.value.c_str()].associates == lexer::Associates::left_to_right))))
+                    // while (!operator_stack.empty() && ((lexer::Lexer::isRightBracket(*token.value.c_str()) && !lexer::Lexer::isLeftBracket(*operator_stack.top().value.c_str())) || (lexer::operators[*operator_stack.top().value.c_str()].precedence > lexer::operators[*token.value.c_str()].precedence) || ((lexer::operators[*operator_stack.top().value.c_str()].precedence == lexer::operators[*token.value.c_str()].precedence) && (lexer::operators[*token.value.c_str()].associates == lexer::Associates::left_to_right))))
+                    while (!operator_stack.empty() && ((token.attribute == lexer::Attribute::rparen && operator_stack.top().attribute != lexer::Attribute::lparen) || (lexer::operators[*operator_stack.top().value.c_str()].precedence > lexer::operators[*token.value.c_str()].precedence) || ((lexer::operators[*operator_stack.top().value.c_str()].precedence == lexer::operators[*token.value.c_str()].precedence) && (lexer::operators[*token.value.c_str()].associates == lexer::Associates::left_to_right))))
                     {
                         lexer::Token op = operator_stack.pop();
                         node::Node<lexer::Token> *e2 = output_stack.pop();
