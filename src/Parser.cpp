@@ -15,20 +15,23 @@ namespace parser
             // lex the words on the line
             std::vector<lexer::Token> words = lexer::Lexer::lex(line);
 
-            // create tree with shunting yard algorithm
+            // // create tree with shunting yard algorithm
             tree::Tree *tree = new tree::Tree();
             tree->curr = shuntingYardPostFix(words);
 
-            // print the tree for debugging
+            // // // print the tree for debugging
             tree->printPostorder(tree->curr);
             std::cout << std::endl;
 
             // pretty print tree
-            // tree->printTreeHelper(tree);
+            tree->printTreeHelper(tree);
 
             // create assembly file
             // assembly::Assembly assembler;
             // assembler.createAssembly(tree->curr);
+
+            std::cout << std::endl
+                      << std::endl;
         }
 
         // std::vector<lexer::Token> words;
@@ -64,31 +67,34 @@ namespace parser
         for (auto &&token : tokens)
         {
             // std::cout << token << std::endl;
-            if (lexer::Lexer::isInteger(token.value))
+            // if (lexer::Lexer::isInteger(token.value))
+            if (token.attribute == lexer::Attribute::floatpt || token.attribute == lexer::Attribute::integer)
             {
                 output_stack.push(new node::Node<lexer::Token>(token));
             }
 
-            // else if (token.attribute == lexer::Attribute::print)
-            // {
-            //     operator_stack.push(token);
-
-            //     // if (output_stack.size() > 1)
-            //     // {
-            //     //     node::Node<lexer::Token> *e = output_stack.pop();
-            //     //     output_stack.push(new node::Node<lexer::Token>(token, e));
-            //     // }
-            //     // else
-            //     // {
-            //     //     operator_stack.push(token);
-            //     // }
-            // }
-
-            else if (lexer::Lexer::isOperator(token.value) || lexer::Lexer::isBracket(*token.value.c_str()))
+            else if (token.attribute == lexer::Attribute::func)
             {
-                if (!lexer::Lexer::isLeftBracket(*token.value.c_str()))
+                // operator_stack.push(token);
+
+                if (output_stack.size() > 1)
                 {
-                    while (!operator_stack.empty() && ((lexer::Lexer::isRightBracket(*token.value.c_str()) && !lexer::Lexer::isLeftBracket(*operator_stack.top().value.c_str())) || (lexer::operators[operator_stack.top().value].precedence > lexer::operators[token.value].precedence) || ((lexer::operators[operator_stack.top().value].precedence == lexer::operators[token.value].precedence) && (lexer::operators[token.value].associates == lexer::Associates::left_to_right))))
+                    node::Node<lexer::Token> *e = output_stack.pop();
+                    output_stack.push(new node::Node<lexer::Token>(token, e));
+                }
+                else
+                {
+                    operator_stack.push(token);
+                }
+            }
+
+            // else if (lexer::Lexer::isOperator(*token.value.c_str()) || lexer::Lexer::isBracket(*token.value.c_str()))
+            else if (token.attribute == lexer::Attribute::op || token.attribute == lexer::Attribute::lparen || token.attribute == lexer::Attribute::rparen)
+            {
+                // if (!lexer::Lexer::isLeftBracket(*token.value.c_str()))
+                if (token.attribute != lexer::Attribute::lparen)
+                {
+                    while (!operator_stack.empty() && ((lexer::Lexer::isRightBracket(*token.value.c_str()) && !lexer::Lexer::isLeftBracket(*operator_stack.top().value.c_str())) || (lexer::operators[*operator_stack.top().value.c_str()].precedence > lexer::operators[*token.value.c_str()].precedence) || ((lexer::operators[*operator_stack.top().value.c_str()].precedence == lexer::operators[*token.value.c_str()].precedence) && (lexer::operators[*token.value.c_str()].associates == lexer::Associates::left_to_right))))
                     {
                         lexer::Token op = operator_stack.pop();
                         node::Node<lexer::Token> *e2 = output_stack.pop();
@@ -96,11 +102,13 @@ namespace parser
                         output_stack.push(new node::Node<lexer::Token>(op, e1, e2));
                     }
                     // If we popped until '(' because token is ')', toss both parens
-                    if (lexer::Lexer::isRightBracket(*token.value.c_str()))
+                    // if (lexer::Lexer::isRightBracket(*token.value.c_str()))
+                    if (token.attribute == lexer::Attribute::rparen)
                         operator_stack.pop();
                 }
                 // Everything except ')' --> stack
-                if (!lexer::Lexer::isRightBracket(*token.value.c_str()))
+                // if (!lexer::Lexer::isRightBracket(*token.value.c_str()))
+                if (token.attribute != lexer::Attribute::rparen)
                     operator_stack.push(token);
             }
             else
@@ -109,30 +117,30 @@ namespace parser
             }
         }
 
-        while (!operator_stack.empty())
-        {
-            lexer::Token op = operator_stack.pop();
-            node::Node<lexer::Token> *e2 = output_stack.pop();
-            node::Node<lexer::Token> *e1 = output_stack.pop();
-            output_stack.push(new node::Node<lexer::Token>(op, e1, e2));
-        }
-
         // while (!operator_stack.empty())
         // {
-        //     if (output_stack.size() > 1)
-        //     {
-        //         lexer::Token op = operator_stack.pop();
-        //         node::Node<lexer::Token> *e2 = output_stack.pop();
-        //         node::Node<lexer::Token> *e1 = output_stack.pop();
-        //         output_stack.push(new node::Node<lexer::Token>(op, e1, e2));
-        //     }
-        //     else
-        //     {
-        //         lexer::Token op = operator_stack.pop();
-        //         auto n = output_stack.pop();
-        //         output_stack.push(new node::Node<lexer::Token>(op, n));
-        //     }
+        //     lexer::Token op = operator_stack.pop();
+        //     node::Node<lexer::Token> *e2 = output_stack.pop();
+        //     node::Node<lexer::Token> *e1 = output_stack.pop();
+        //     output_stack.push(new node::Node<lexer::Token>(op, e1, e2));
         // }
+
+        while (!operator_stack.empty())
+        {
+            if (output_stack.size() > 1)
+            {
+                lexer::Token op = operator_stack.pop();
+                node::Node<lexer::Token> *e2 = output_stack.pop();
+                node::Node<lexer::Token> *e1 = output_stack.pop();
+                output_stack.push(new node::Node<lexer::Token>(op, e1, e2));
+            }
+            else
+            {
+                lexer::Token op = operator_stack.pop();
+                auto n = output_stack.pop();
+                output_stack.push(new node::Node<lexer::Token>(op, n));
+            }
+        }
 
         return output_stack.pop();
     }

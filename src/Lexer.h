@@ -18,17 +18,23 @@ namespace lexer
     static const char RB = ')';
     static const char EX = '^';
     static const char SP = ' ';
+    static const char CM = ',';
+    static const char SC = ';';
+    static const char PT = '.';
 
     enum class Attribute
     {
         integer,
+        floatpt,
         lparen,
         rparen,
-        opadd,
-        opsub,
-        opmul,
-        opdiv,
-        print
+        // opadd,
+        // opsub,
+        // opmul,
+        // opdiv,
+        op,
+        // print
+        func
     };
 
     // static std::map<Attribute, std::string> attribute{
@@ -53,46 +59,31 @@ namespace lexer
         Associates associates;
     };
 
-    static std::map<std::string, info> operators{
-        {"^", {4, Associates::right_to_left}},
-        {"*", {3, Associates::left_to_right}},
-        {"/", {3, Associates::left_to_right}},
-        {"+", {2, Associates::left_to_right}},
-        {"-", {2, Associates::left_to_right}}};
+    // static std::map<std::string, info> operators{
+    //     {"^", {4, Associates::right_to_left}},
+    //     {"*", {3, Associates::left_to_right}},
+    //     {"/", {3, Associates::left_to_right}},
+    //     {"+", {2, Associates::left_to_right}},
+    //     {"-", {2, Associates::left_to_right}}};
+    static std::map<const char, info> operators{
+        {'^', {4, Associates::right_to_left}},
+        {'*', {3, Associates::left_to_right}},
+        {'/', {3, Associates::left_to_right}},
+        {'+', {2, Associates::left_to_right}},
+        {'-', {2, Associates::left_to_right}}};
 
+    // template <typename T>
     struct Token
     {
         Attribute attribute;
         std::string value;
+        // char *value;
 
-        friend std::ostream &operator<<(std::ostream &os, const Token &m)
-        {
-            return os << m.value;
-        }
+        // friend std::ostream &operator<<(std::ostream &os, const Token &m)
+        // {
+        //     return os << m.value;
+        // }
     };
-
-    // class Token
-    // {
-    // private:
-    // public:
-    //     Attribute attribute;
-    //     std::string value;
-
-    //     Token()
-    //     {
-    //     }
-
-    //     Token(Attribute attr, std::string val)
-    //     {
-    //         attribute = attr;
-    //         value = val;
-    //     }
-
-    //     friend std::ostream &operator<<(std::ostream &os, const Token &m)
-    //     {
-    //         return os << m.value;
-    //     }
-    // };
 
     class Lexer
     {
@@ -101,9 +92,10 @@ namespace lexer
         Lexer();
         ~Lexer();
 
-        static bool isOperator(const std::string val);
+        // static bool isOperator(const std::string val);
+        static bool isOperator(const char val);
 
-        static bool isOperator(char val);
+        // static bool isOperator(char val);
 
         static bool isBracket(const char &val);
 

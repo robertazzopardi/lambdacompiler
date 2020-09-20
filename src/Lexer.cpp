@@ -20,7 +20,11 @@ namespace lexer
     //     return t.find_first_not_of("0123456789") == std::string::npos;
     // }
 
-    bool Lexer::isOperator(const std::string val)
+    // bool Lexer::isOperator(const std::string val)
+    // {
+    //     return operators.count(val) > 0;
+    // }
+    bool Lexer::isOperator(const char val)
     {
         return operators.count(val) > 0;
     }
@@ -78,81 +82,211 @@ namespace lexer
     {
         std::vector<Token> tokens;
 
-        for (auto &&text : split(str))
+        // for (auto &&text : split(str))
+        // {
+
+        //     if (isInteger(text))
+        //     {
+        //         // Token token(Attribute::integer, text);
+        //         Token token = {Attribute::integer, text};
+        //         tokens.push_back(token);
+        //     }
+        //     else if (text.find('(') != std::string::npos)
+        //     {
+        //         while (text.find('(') != std::string::npos)
+        //         {
+        //             Token token = {Attribute::lparen, text.substr(0, 1)}; //(Attribute::lparen, text.substr(0, 1));
+        //             tokens.push_back(token);
+        //             text = text.substr(1, text.length());
+        //         }
+        //         // Token token(Attribute::lparen, text);
+        //         if (text != "")
+        //         {
+        //             Token token = {Attribute::lparen, text};
+        //             tokens.push_back(token);
+        //         }
+
+        //     } // found
+        //     else if (text.find(')') != std::string::npos)
+        //     {
+        //         std::reverse(text.begin(), text.end());
+        //         while (text.find(')') != std::string::npos)
+        //         {
+        //             // Token token(Attribute::rparen, text.substr(text.length() - 1, text.length()));
+        //             Token token = {Attribute::rparen, text.substr(text.length() - 1, text.length())};
+        //             tokens.push_back(token);
+        //             text = text.substr(0, text.length() - 1);
+        //         }
+        //         // Token token(Attribute::rparen, text);
+        //         if (text != "")
+        //         {
+        //             Token token = {Attribute::rparen, text};
+        //             tokens.push_back(token);
+        //         }
+        //     }
+        //     else if (isOperator(*text.c_str()))
+        //     {
+        //         // Token token(Attribute::opadd, text);
+        //         Token token = {Attribute::op, text};
+        //         tokens.push_back(token);
+        //     }
+
+        //     else if (isFunction(text))
+        //     {
+        //         Token token = {Attribute::func, text};
+        //         tokens.push_back(token);
+        //     }
+        //     else
+        //     {
+        //         // std::cout << text << std::endl;
+
+        //         // not found
+        //         for (auto &&i : text)
+        //         {
+
+        //             std::stringstream ss;
+        //             std::string s;
+        //             ss << i;
+        //             ss >> s;
+        //             // std::cout << s;
+
+        //             // Token token(Attribute::integer, s);
+        //             Token token = {Attribute::integer, s};
+
+        //             tokens.push_back(token);
+        //         }
+        //     }
+        // }
+
+        std::cout << str << std::endl;
+        std::string funcPlaceholder;
+        std::string numberPlaceholder;
+        for (auto c : str)
         {
-
-            if (isInteger(text))
+            if (c == SP || c == CM)
             {
-                // Token token(Attribute::integer, text);
-                Token token = {Attribute::integer, text};
-                tokens.push_back(token);
+                if (numberPlaceholder != "")
+                {
+
+                    if (numberPlaceholder.find(PT) > 0)
+                    { // float
+                        // std::cout << numberPlaceholder << " ";
+                        tokens.push_back({Attribute::floatpt, numberPlaceholder});
+                        numberPlaceholder = "";
+                    }
+                    else
+                    { // int
+                        // std::cout << numberPlaceholder << " ";
+                        tokens.push_back({Attribute::integer, numberPlaceholder});
+                        numberPlaceholder = "";
+                    }
+                }
+                continue;
             }
-            else if (text.find('(') != std::string::npos)
+            else if (c == PT)
             {
-                while (text.find('(') != std::string::npos)
+                if (numberPlaceholder != "")
                 {
-                    Token token = {Attribute::lparen, text.substr(0, 1)}; //(Attribute::lparen, text.substr(0, 1));
-                    tokens.push_back(token);
-                    text = text.substr(1, text.length());
+                    numberPlaceholder += c;
                 }
-                // Token token(Attribute::lparen, text);
-                if (text != "")
+                else
                 {
-                    Token token = {Attribute::lparen, text};
-                    tokens.push_back(token);
-                }
-
-            } // found
-            else if (text.find(')') != std::string::npos)
-            {
-                std::reverse(text.begin(), text.end());
-                while (text.find(')') != std::string::npos)
-                {
-                    // Token token(Attribute::rparen, text.substr(text.length() - 1, text.length()));
-                    Token token = {Attribute::rparen, text.substr(text.length() - 1, text.length())};
-                    tokens.push_back(token);
-                    text = text.substr(0, text.length() - 1);
-                }
-                // Token token(Attribute::rparen, text);
-                if (text != "")
-                {
-                    Token token = {Attribute::rparen, text};
-                    tokens.push_back(token);
+                    // const
                 }
             }
-            else if (isOperator(text))
+            else if (isdigit(c))
             {
-                // Token token(Attribute::opadd, text);
-                Token token = {Attribute::opadd, text};
-                tokens.push_back(token);
+                // std::cout << c << " ";
+                numberPlaceholder += c;
             }
-
-            else if (isFunction(text))
+            else if (isalpha(c))
             {
-                Token token = {Attribute::print, text};
-                tokens.push_back(token);
+                // std::cout << c << " ";
+                funcPlaceholder += c;
+            }
+            else if (isOperator(c))
+            {
+                if (funcPlaceholder != "")
+                {
+                    // std::cout << funcPlaceholder << " ";
+                    tokens.push_back({Attribute::func, funcPlaceholder});
+                    funcPlaceholder = "";
+                }
+                // std::cout << c << " ";
+                std::string b;
+                b += c;
+                tokens.push_back({Attribute::op, b});
+            }
+            else if (isBracket(c))
+            {
+                if (numberPlaceholder != "")
+                {
+
+                    if (numberPlaceholder.find(PT) > 0)
+                    { // float
+                        // std::cout << numberPlaceholder << " ";
+                        tokens.push_back({Attribute::floatpt, numberPlaceholder});
+                        numberPlaceholder = "";
+                    }
+                    else
+                    { // int
+                        // std::cout << numberPlaceholder << " ";
+                        tokens.push_back({Attribute::integer, numberPlaceholder});
+                        numberPlaceholder = "";
+                    }
+                }
+
+                if (funcPlaceholder != "")
+                {
+                    // std::cout << funcPlaceholder << " ";
+                    tokens.push_back({Attribute::func, funcPlaceholder});
+                    funcPlaceholder = "";
+                }
+                // std::cout << c << " ";
+                if (isLeftBracket(c))
+                {
+                    std::string b;
+                    b += c;
+                    tokens.push_back({Attribute::lparen, b});
+                }
+                else
+                {
+                    std::string b;
+                    b += c;
+                    tokens.push_back({Attribute::rparen, b});
+                }
             }
             else
             {
-                // std::cout << text << std::endl;
-
-                // not found
-                for (auto &&i : text)
-                {
-
-                    std::stringstream ss;
-                    std::string s;
-                    ss << i;
-                    ss >> s;
-                    // std::cout << s;
-
-                    // Token token(Attribute::integer, s);
-                    Token token = {Attribute::integer, s};
-
-                    tokens.push_back(token);
-                }
+                // std::cout << std::endl
+                //           << c << std::endl;
             }
         }
+
+        if (numberPlaceholder != "")
+        {
+
+            if (numberPlaceholder.find(PT) > 0)
+            { // float
+                // std::cout << numberPlaceholder << " ";
+                tokens.push_back({Attribute::floatpt, numberPlaceholder});
+                numberPlaceholder = "";
+            }
+            else
+            { // int
+                // std::cout << numberPlaceholder << " ";
+                tokens.push_back({Attribute::integer, numberPlaceholder});
+                numberPlaceholder = "";
+            }
+        }
+
+        // std::cout << std::endl;
+        // for (auto &&i : tokens)
+        // {
+        //     std::cout << i.value << " ";
+        // }
+        // std::cout << std::endl;
+        // std::cout << std::endl;
 
         return tokens;
     }

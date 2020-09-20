@@ -10,11 +10,5 @@ section .data
 section .text
 
 main:
-	_add 2, 3, qword [sum]
-	_add 1, 2, qword [sum]
-	_add 100, 100, qword [sum]
-	print_sum qword [sum], integerfmt
-	print_sum qword [sum], integerfmt
-	print_sum qword [sum], integerfmt
 
 	ret

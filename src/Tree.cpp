@@ -85,7 +85,7 @@ namespace tree
             return;
 
         /* first print data of node */
-        std::cout << node->data << " ";
+        std::cout << node->data.value << " ";
 
         /* then recur on left sutree */
         printPreorder(node->leftNode);
@@ -106,7 +106,7 @@ namespace tree
         printPostorder(node->rightNode);
 
         // now deal with the node
-        std::cout << node->data << " ";
+        std::cout << node->data.value << " ";
     }
 
     void Tree::printInorder(const node::Node<lexer::Token> *node)
@@ -118,7 +118,7 @@ namespace tree
         printInorder(node->leftNode);
 
         /* then print the data of node */
-        std::cout << node->data << " ";
+        std::cout << node->data.value << " ";
 
         /* now recur on right child */
         printInorder(node->rightNode);
@@ -131,7 +131,7 @@ namespace tree
 
         if (level == 1)
         {
-            std::cout << node->data;
+            std::cout << node->data.value;
         }
         else if (level > 1)
         {

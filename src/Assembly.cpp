@@ -92,7 +92,7 @@ namespace assembly
 
         switch (node->data.attribute)
         {
-        case lexer::Attribute::opadd:
+        case lexer::Attribute::op:
             op = node->data.value;
             break;
 
@@ -103,7 +103,7 @@ namespace assembly
                 val2 = node->data.value;
             break;
 
-        case lexer::Attribute::print:
+        case lexer::Attribute::func:
             function += "print_sum qword [sum], integerfmt\n";
             break;
 
