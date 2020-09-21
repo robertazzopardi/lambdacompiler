@@ -168,7 +168,7 @@ namespace lexer
                 if (numberPlaceholder != "")
                 {
 
-                    if (numberPlaceholder.find(PT) > 0)
+                    if (numberPlaceholder.find(PT) != std::string::npos)
                     { // float
                         // std::cout << numberPlaceholder << " ";
                         tokens.push_back({Attribute::floatpt, numberPlaceholder});
@@ -222,7 +222,7 @@ namespace lexer
                 if (numberPlaceholder != "")
                 {
 
-                    if (numberPlaceholder.find(PT) > 0)
+                    if (numberPlaceholder.find(PT) != std::string::npos)
                     { // float
                         // std::cout << numberPlaceholder << " ";
                         tokens.push_back({Attribute::floatpt, numberPlaceholder});
@@ -266,7 +266,7 @@ namespace lexer
         if (numberPlaceholder != "")
         {
 
-            if (numberPlaceholder.find(PT) > 0)
+            if (numberPlaceholder.find(PT) != std::string::npos)
             { // float
                 // std::cout << numberPlaceholder << " ";
                 tokens.push_back({Attribute::floatpt, numberPlaceholder});

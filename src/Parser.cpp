@@ -31,8 +31,8 @@ namespace parser
         //     assembly::Assembly assembler;
         //     assembler.createAssembly(tree->curr);
 
-        //     std::cout << std::endl
-        //               << std::endl;
+        // std::cout << std::endl
+        //           << std::endl;
         // }
 
         std::vector<tree::Tree *> trees;
@@ -47,12 +47,16 @@ namespace parser
             tree->root = shuntingYardPostFix(tokens);
 
             // print the post order tree
-            tree->printPostorder(tree->root);
-            // tree->printPreorder(tree->curr);
-            std::cout << std::endl;
+            // tree->printPostorder(tree->root);
+            // tree->printTreeHelper(tree);
+            tree->setTreeNodeParents(tree->root);
+            // std::cout << std::endl;
+            std::cout << std::endl
+                      << std::endl;
 
             trees.push_back(tree);
         }
+        std::cout << std::endl;
 
         // // pretty print tree
         // tree->printTreeHelper(tree);

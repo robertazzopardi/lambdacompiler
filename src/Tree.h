@@ -54,6 +54,8 @@ namespace tree
 
         // prints the abstract syntax tree with formatting
         void printTreeHelper(Tree *tree);
+
+        void setTreeNodeParents(node::Node<lexer::Token> *node);
     };
 
     template <class T>

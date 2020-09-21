@@ -40,7 +40,7 @@ namespace tree
 
     void Tree::printTreeHelper(tree::Tree *tree)
     {
-        int h = tree->getDepth(tree->curr);
+        int h = tree->getDepth(tree->root);
         for (size_t i = 1; i <= h; i++)
         {
             if (i > 1)
@@ -55,7 +55,7 @@ namespace tree
                     std::cout << " ";
             }
 
-            formatPrintTree(tree->curr, i, h);
+            formatPrintTree(tree->root, i, h);
         }
         std::cout << "\n"
                   << std::endl;
@@ -142,5 +142,19 @@ namespace tree
 
             formatPrintTree(node->rightNode, level - 1, depth);
         }
+    }
+
+    void Tree::setTreeNodeParents(node::Node<lexer::Token> *node)
+    {
+        if (node == nullptr)
+            return;
+
+        // std::cout << node->data.value << std::endl;
+        if (node->leftNode != nullptr)
+            node->leftNode->parentNode = node;
+        if (node->rightNode != nullptr)
+            node->rightNode->parentNode = node;
+        setTreeNodeParents(node->leftNode);
+        setTreeNodeParents(node->rightNode);
     }
 } // namespace tree

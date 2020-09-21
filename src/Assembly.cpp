@@ -16,9 +16,7 @@ namespace assembly
         fileContents = includeFunctions + globals + dataSection + integerFormat + textSection;
         // traverseTree(node);
         for (auto &&tree : trees)
-        {
             traverseTree(tree->root);
-        }
 
         fileContents += returnFromMain;
         // std::cout << std::endl
@@ -107,99 +105,157 @@ namespace assembly
 
         // std::cout << node->data.value << " " << std::endl;
 
-        switch (node->data.attribute)
-        {
-        case lexer::Attribute::func:
-            if (node->data.value == "print")
-            {
-                printFunction = node->data.value;
-            }
-            else
-            {
-                function = node->data.value;
-            }
-            break;
-        case lexer::Attribute::integer:
-            if (val1 == "")
-            {
-                val1 = node->data.value;
-            }
-            else
-            {
-                val2 = node->data.value;
-            }
-            break;
-        case lexer::Attribute::floatpt:
-            if (val1 == "")
-            {
-                val1 = node->data.value;
-            }
-            else
-            {
-                val2 = node->data.value;
-            }
-            break;
-        case lexer::Attribute::op:
-            switch (*node->data.value.c_str())
-            {
-            case '+':
-                // std::cout << "FGASDJGSHF" << std::endl;
-                op = node->data.value;
-                break;
+        // switch (node->data.attribute)
+        // {
+        // case lexer::Attribute::func:
+        //     if (node->data.value == "print")
+        //     {
+        //         printFunction = node->data.value;
+        //     }
+        //     else
+        //     {
+        //         function = node->data.value;
+        //     }
+        //     break;
+        // case lexer::Attribute::integer:
+        //     if (val1 == "")
+        //     {
+        //         val1 = node->data.value;
+        //     }
+        //     else
+        //     {
+        //         val2 = node->data.value;
+        //     }
+        //     break;
+        // case lexer::Attribute::floatpt:
+        //     if (val1 == "")
+        //     {
+        //         val1 = node->data.value;
+        //     }
+        //     else
+        //     {
+        //         val2 = node->data.value;
+        //     }
+        //     break;
+        // case lexer::Attribute::op:
+        //     switch (*node->data.value.c_str())
+        //     {
+        //     case '+':
+        //         // std::cout << "FGASDJGSHF" << std::endl;
+        //         op = node->data.value;
+        //         break;
 
-            case '-':
-                // std::cout << "FGASDJGSHF" << std::endl;
-                op = node->data.value;
-                break;
+        //     case '-':
+        //         // std::cout << "FGASDJGSHF" << std::endl;
+        //         op = node->data.value;
+        //         break;
 
-            case '*':
-                // std::cout << "FGASDJGSHF" << std::endl;
-                op = node->data.value;
-                break;
+        //     case '*':
+        //         // std::cout << "FGASDJGSHF" << std::endl;
+        //         op = node->data.value;
+        //         break;
 
-            case '/':
-                // std::cout << "FGASDJGSHF" << std::endl;
-                op = node->data.value;
-                break;
+        //     case '/':
+        //         // std::cout << "FGASDJGSHF" << std::endl;
+        //         op = node->data.value;
+        //         break;
 
-            case '^':
-                // std::cout << "FGASDJGSHF" << std::endl;
-                op = node->data.value;
-                break;
+        //     case '^':
+        //         // std::cout << "FGASDJGSHF" << std::endl;
+        //         op = node->data.value;
+        //         break;
 
-            default:
-                break;
-            }
-            break;
-        default:
-            break;
-        }
+        //     default:
+        //         break;
+        //     }
+        //     break;
+        // default:
+        //     break;
+        // }
 
-        if (op != "" && val2 != "")
-        {
-            if (op == "^")
-            {
-                fileContents += "\tmov r8, " + val1 + "\n\tmov r9, " + val2 + "\n";
-                fileContents += "\tcall " + operatorMap.at(op) + "\n";
-                fileContents += "\tmov [sum], rax\n";
-            }
-            else
-            {
-                fileContents += "\t" + operatorMap.at(op);
-                fileContents += " " + val1 + ", " + val2 + ", qword [sum]\n";
-            }
-            if (printFunction != "")
-            {
-                fileContents += "\tprint_sum [sum], integerfmt\n\n";
-                printFunction = "";
-            }
-            val1 = val2 = op = "";
-        }
-
-        // if ()
+        // if (op != "" && val2 != "")
+        // {
+        //     if (op == "^")
+        //     {
+        //         fileContents += "\tmov r8, " + val1 + "\n\tmov r9, " + val2 + "\n";
+        //         fileContents += "\tcall " + operatorMap.at(op) + "\n";
+        //         fileContents += "\tmov [sum], rax\n";
+        //     }
+        //     else
+        //     {
+        //         fileContents += "\t" + operatorMap.at(op);
+        //         fileContents += " " + val1 + ", " + val2 + ", [sum]\n";
+        //     }
+        //     if (printFunction != "")
+        //     {
+        //         fileContents += "\tprint_sum [sum], integerfmt\n\n";
+        //         printFunction = "";
+        //     }
+        //     val1 = val2 = op = "";
+        // }
 
         traverseTree(node->leftNode);
         traverseTree(node->rightNode);
+
+        // std::cout << node->data.value << " " << std::endl;
+
+        switch (node->data.attribute)
+        {
+            // case lexer::Attribute::floatpt:
+
+            //     break;
+
+            // case lexer::Attribute::integer:
+
+            //     break;
+
+        case lexer::Attribute::func:
+            if (node->data.value == "print")
+            {
+                // std::cout << "\tprint_sum [sum], integerfmt\n"
+                //           << std::endl;
+                fileContents += "\tprint_sum [sum], integerfmt\n\n";
+            }
+            break;
+
+        case lexer::Attribute::op:
+            if (node->data.value == "^")
+            {
+                // std::cout << node->parentNode->data.value << std::endl;
+                fileContents += "\tmov r8, " + node->leftNode->data.value + "\n\tmov r9, " + node->rightNode->data.value + "\n";
+                fileContents += "\tcall " + operatorMap.at(node->data.value) + "\n";
+
+                // fileContents += "\tadd [sum], rax\n";
+                fileContents += "\t" + operatorSimpleMap.at(node->parentNode->data.value) + " [sum], rax\n";
+            }
+            else if (node->leftNode->data.attribute == lexer::Attribute::integer && node->rightNode->data.attribute == lexer::Attribute::integer)
+            {
+                // std::cout << node->data.value << " " << node->leftNode->data.value << " " << node->rightNode->data.value << std::endl;
+                // std::cout << "\t" + operatorMap.at(node->data.value) + " " + node->leftNode->data.value + ", " + node->rightNode->data.value + ", [sum]" << std::endl;
+                fileContents += "\t" + operatorMap.at(node->data.value) + " " + node->leftNode->data.value + ", " + node->rightNode->data.value + ", [sum]\n";
+            }
+            else if (node->leftNode->data.attribute == lexer::Attribute::integer && node->rightNode->data.attribute != lexer::Attribute::integer)
+            {
+                // std::cout << node->data.value << " " << node->leftNode->data.value << std::endl;
+                // std::cout << "\t" + operatorMap.at(node->data.value) + " [sum], " + node->leftNode->data.value << std::endl;
+                fileContents += "\t" + operatorMap.at(node->data.value) + " [sum], " + node->leftNode->data.value + ", [sum]\n";
+            }
+            else if (node->leftNode->data.attribute != lexer::Attribute::integer && node->rightNode->data.attribute == lexer::Attribute::integer)
+            {
+                // std::cout << node->data.value << " " << node->rightNode->data.value << std::endl;
+                // std::cout << "\t" + operatorMap.at(node->data.value) + " [sum], " + node->rightNode->data.value << std::endl;
+                fileContents += "\t" + operatorMap.at(node->data.value) + " [sum], " + node->rightNode->data.value + ", [sum]\n";
+            }
+            else
+            {
+                // std::cout << node->data.value << std::endl;
+                carry = node->data.value;
+            }
+            break;
+
+        default:
+            break;
+        }
     }
 
 } // namespace assembly

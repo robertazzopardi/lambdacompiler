@@ -10,25 +10,20 @@ section .data
 section .text
 
 main:
-	_add 2, 3, qword [sum]
+	_add 2, 3, [sum]
 	print_sum [sum], integerfmt
 
-	_add 2, 30, qword [sum]
-	print_sum [sum], integerfmt
-
-	_add 1, 2, qword [sum]
-	print_sum [sum], integerfmt
-
-	_add 100, 100, qword [sum]
-	print_sum [sum], integerfmt
-
-	_add 5, 5, qword [sum]
-	print_sum [sum], integerfmt
-
-	mov r8, 8
-	mov r9, 2
+	_add 2, 2, [sum]
+	_sub [sum], 2, [sum]
+	mov r8, 33
+	mov r9, 4
 	call _ipow
-	mov [sum], rax
+	sub [sum], rax
+	print_sum [sum], integerfmt
+
+	_add 3, 1, [sum]
+	_add 2, 3, [sum]
+	_add 3, 4, [sum]
 	print_sum [sum], integerfmt
 
 

@@ -14,6 +14,7 @@ namespace assembly
     class Assembly
     {
     private:
+        std::string carry;
         std::string fileContents;
         std::string currInstruction;
         std::string val1;
@@ -35,6 +36,13 @@ namespace assembly
             {"*", "_mul"},
             {"/", "_div"},
             {"^", "_ipow"}};
+
+        const std::map<std::string, std::string> operatorSimpleMap{
+            {"+", "add"},
+            {"-", "sub"},
+            {"*", "mul"},
+            {"/", "div"},
+            {"^", "_ipow"}}; // no support for ^ yet
 
     public:
         Assembly();
