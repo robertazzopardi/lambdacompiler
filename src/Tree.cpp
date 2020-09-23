@@ -157,4 +157,27 @@ namespace tree
         setTreeNodeParents(node->leftNode);
         setTreeNodeParents(node->rightNode);
     }
+
+    void Tree::pPrint(const node::Node<lexer::Token> *node)
+    {
+        pPrintHelper(node);
+    }
+
+    void Tree::pPrintHelper(const node::Node<lexer::Token> *node)
+    {
+        if (node == nullptr)
+            return;
+
+        std::cout << node->data.value << " ";
+        pPrint(node->leftNode);
+        pPrint(node->rightNode);
+    }
+
+    int Tree::toInt(std::string str)
+    {
+        int num;
+        std::stringstream ss(str);
+        ss >> num;
+        return num;
+    }
 } // namespace tree

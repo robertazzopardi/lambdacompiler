@@ -16,17 +16,22 @@ namespace assembly
     private:
         std::string carry;
         std::string fileContents;
-        std::string currInstruction;
-        std::string val1;
-        std::string val2;
-        std::string op;
-        std::string function;
-        std::string printFunction;
+        // std::string currInstruction;
+        // std::string val1;
+        // std::string val2;
+        // std::string op;
+        // std::string function;
+        // std::string printFunction;
+        size_t count = 0;
+        int numSums = 0;
+        std::vector<std::string> sumVariables;
+
         const std::string includeFunctions = "%include '" + std::string(fhandler::_currentPath()) + "lib/functions.asm'\n\n";
         const std::string globals = "global main\nextern printf\n\n";
-        const std::string dataSection = "section .data\n\tsum DQ 0";
-        const std::string textSection = "section .text\n\nmain:\n";
-        const std::string returnFromMain = "\n\tret";
+        // const std::string dataSection = "section .data\n\tsum DQ 0";
+        std::string dataSection = "section .data\n";
+        std::string textSection = "section .text\n\nmain:\n";
+        const std::string returnFromMain = "\tret";
         const std::string floatFormat = "\n\tfloatfmt db  '%.6g', 10, 0\n\n";
         const std::string integerFormat = "\n\tintegerfmt db '%d', 10, 0\n\n";
 
@@ -42,7 +47,9 @@ namespace assembly
             {"-", "sub"},
             {"*", "mul"},
             {"/", "div"},
-            {"^", "_ipow"}}; // no support for ^ yet
+            {"^", "_ipow"},
+            // {"print", "print_sum"}
+        };
 
     public:
         Assembly();
