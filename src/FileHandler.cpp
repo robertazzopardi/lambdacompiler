@@ -29,6 +29,17 @@ namespace fhandler
     {
     }
 
+    std::string FileHandler::trim(const std::string &str)
+    {
+        size_t first = str.find_first_not_of(' ');
+        if (std::string::npos == first)
+        {
+            return str;
+        }
+        size_t last = str.find_last_not_of(' ');
+        return str.substr(first, (last - first + 1));
+    }
+
     std::vector<std::string> FileHandler::readFilesLines(std::string path)
     {
         std::vector<std::string> lines;
@@ -39,15 +50,10 @@ namespace fhandler
         {
             while (std::getline(file, line)) // move to the lexer function
             {
-                auto commentPos = line.find("//");
-                if (commentPos == std::string::npos)
-                {
-                    lines.push_back(line.substr(0, commentPos));
-                }
-                // if (line.find("//") == std::string::npos)
-                // {
-                //     lines.push_back(line);
-                // }
+                auto b = line.substr(0, line.find("//"));
+
+                if (b != "")
+                    lines.push_back(trim(b));
             }
         }
         else

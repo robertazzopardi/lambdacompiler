@@ -40,6 +40,8 @@ namespace fhandler
 
         FileHandler();
         ~FileHandler();
+
+        static std::string trim(const std::string &str);
         static std::vector<std::string> readFilesLines(std::string path);
         static void writeFile(const std::string filePath, std::string data);
 

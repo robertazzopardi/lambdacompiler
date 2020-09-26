@@ -31,40 +31,29 @@ namespace parser
         //     assembly::Assembly assembler;
         //     assembler.createAssembly(tree->curr);
 
-        // std::cout << std::endl
-        //           << std::endl;
-        // }
-
         std::vector<tree::Tree *> trees;
-        // std::vector<lexer::Token> words;
+
         for (auto &&line : filesLines)
         {
             std::vector<lexer::Token> tokens = lexer::Lexer::lex(line);
-            // words.insert(words.end(), tokens.begin(), tokens.end());
 
             // create tree with shunting yard algorithm
             tree::Tree *tree = new tree::Tree();
             tree->root = shuntingYardPostFix(tokens);
 
-            // print the post order tree
-
             tree->setTreeNodeParents(tree->root);
 
-            // tree->printPostorder(tree->root);
-            // tree->printTreeHelper(tree);
-            tree->prt(tree->root);
+            tree->printPostorder(tree->root);
 
-            // std::cout << std::endl;
             std::cout << std::endl
                       << std::endl;
 
             trees.push_back(tree);
         }
-        std::cout << std::endl;
 
-        // // create assembly file
-        // assembly::Assembly assembler;
-        // assembler.createAssembly(trees);
+        // create assembly file
+        assembly::Assembly assembler;
+        assembler.createAssembly(trees);
     }
 
     // template <class T>

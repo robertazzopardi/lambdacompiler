@@ -92,6 +92,7 @@ namespace tree
             std ::list<node_depth> q;
 
             q.push_back(node_depth(n, last_lvl));
+
             while (q.size())
             {
                 const node_depth &nd = *q.begin();
@@ -109,14 +110,18 @@ namespace tree
                 if (nd.n)
                 {
                     if (nd.n->data.attribute == lexer::Attribute::integer || nd.n->data.attribute == lexer::Attribute::floatpt)
+                    {
                         sprintf(buf, " %*s%d%*s", offset, " ", std::atoi(nd.n->data.value.c_str()), offset, " ");
+                    }
                     else
                     {
                         sprintf(buf, " %*s%s%*s", offset, " ", nd.n->data.value.c_str(), offset, " ");
                     }
                 }
                 else
+                {
                     sprintf(buf, " %*s", offset << 1, " ");
+                }
                 std::cout << buf;
 
                 if (nd.n)

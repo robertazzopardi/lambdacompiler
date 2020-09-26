@@ -158,7 +158,10 @@ namespace lexer
         //     }
         // }
 
+        // remove spaces
+
         std::cout << str << std::endl;
+
         std::string funcPlaceholder;
         std::string numberPlaceholder;
         for (auto c : str)
@@ -206,6 +209,23 @@ namespace lexer
             }
             else if (isOperator(c))
             {
+                if (numberPlaceholder != "")
+                {
+
+                    if (numberPlaceholder.find(PT) != std::string::npos)
+                    { // float
+                        // std::cout << numberPlaceholder << " ";
+                        tokens.push_back({Attribute::floatpt, numberPlaceholder});
+                        numberPlaceholder = "";
+                    }
+                    else
+                    { // int
+                        // std::cout << numberPlaceholder << " ";
+                        tokens.push_back({Attribute::integer, numberPlaceholder});
+                        numberPlaceholder = "";
+                    }
+                }
+
                 if (funcPlaceholder != "")
                 {
                     // std::cout << funcPlaceholder << " ";
