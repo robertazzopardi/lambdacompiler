@@ -14,6 +14,7 @@ namespace assembly
     class Assembly
     {
     private:
+        bool hasDivisor = false;
         std::string fileContents;
         size_t count = 0;
         std::vector<std::string> sumVariables;
@@ -23,7 +24,7 @@ namespace assembly
         std::string dataSection = "section .data\n";
         std::string textSection = "\nsection .text\n\nmain:\n";
         const std::string returnFromMain = "\tret";
-        const std::string floatFormat = "\tfloatfmt db  '%.6g', 10, 0\n";
+        const std::string floatFormat = "\tfloatfmt db '%.6g', 10, 0\n";
         const std::string integerFormat = "\tintegerfmt db '%d', 10, 0\n";
 
         const std::map<std::string, std::string> operatorMap{

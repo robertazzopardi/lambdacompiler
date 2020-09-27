@@ -16,6 +16,7 @@ namespace assembly
 
         for (auto &&tree : trees)
         {
+            hasDivisor = false;
             traverseTree(tree->root);
         }
 
@@ -35,33 +36,13 @@ namespace assembly
         //  rm ./tests/testfile.o
         //  ./tests/testfile
 
-        // std::cout << "nasm " + fhandler::FileHandler::asmfilename + " -f elf64" << std::endl;
         std::string _nasm = "nasm " + fhandler::FileHandler::asmfilename + " -f elf64";
         system(_nasm.c_str());
-        // std::cout << _nasm.c_str() << std::endl;
 
-        // std::cout << "gcc -no-pie -Wall -Wextra -Werror -o " + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.')) + " " + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.')) + ".o" << std::endl;
         std::string _linker = "gcc -no-pie -Wall -Wextra -Werror -o " + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.')) + " " + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.')) + ".o";
         system(_linker.c_str());
-        // std::cout << _linker.c_str() << std::endl;
 
-        // // std::cout
-        // //     << "rm " + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.')) + ".o" << std::endl;
-        // std::string _rmOutput = "rm " + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.')) + ".o";
-        // // system(_rmOutput.c_str());
-        // // std::cout << _rmOutput.c_str() << std::endl;
-
-        // // std::cout
-        // //     << "rm " + fhandler::FileHandler::asmfilename << std::endl;
-        // std::string _rmAsm = "rm " + fhandler::FileHandler::asmfilename;
-        // // system(_rmAsm.c_str());
-        // // std::cout << _rmAsm.c_str() << std::endl;
-
-        // //
-        // std::string _runFile = "./" + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.'));
-        // // system(_runFile.c_str());
-        // // std::cout << _runFile.c_str() << std::endl;
-
+        // nasm examples/testfile.asm -f elf64 && gcc -no-pie -Wall -Wextra -Werror -o examples/testfile examples/testfile.o && ./examples/testfile
         for (auto &&i : fhandler::FileHandler::flags)
             if (i.second.command != "")
                 system(i.second.command.c_str());
@@ -70,9 +51,7 @@ namespace assembly
     void Assembly::traverseTree(const node::Node<lexer::Token> *node)
     {
         if (node == nullptr)
-        {
             return;
-        }
 
         traverseTree(node->leftNode);
         traverseTree(node->rightNode);
@@ -92,12 +71,16 @@ namespace assembly
         case lexer::Attribute::func:
             if (node->data.value == "print")
             {
-                textSection += "\tprint_sum [sum" + std::to_string(count) + "], integerfmt\n\n";
+                if (hasDivisor)
+                    textSection += "\tprint_float [sum" + std::to_string(count) + "], floatfmt\n\n";
+                else
+                    textSection += "\tprint_sum [sum" + std::to_string(count) + "], integerfmt\n\n";
             }
             break;
 
         case lexer::Attribute::op:
-
+            if (node->data.value == "/")
+                hasDivisor = true;
             // left node is number
             // right node is number
             // else
