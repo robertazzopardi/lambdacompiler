@@ -57,8 +57,6 @@
 .history/
 
 # folders
-lib/
-output/
 bin/
 build/
 data/
