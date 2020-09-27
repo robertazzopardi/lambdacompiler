@@ -32,7 +32,8 @@ namespace assembly
             {"-", "_sub"},
             {"*", "_mul"},
             {"/", "_div"},
-            {"^", "_ipow"}};
+            {"^", "_ipow"},
+            {"%", "_mod"}};
 
     public:
         Assembly();

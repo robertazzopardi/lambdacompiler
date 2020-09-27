@@ -69,6 +69,7 @@ namespace lexer
         {'^', {4, Associates::right_to_left}},
         {'*', {3, Associates::left_to_right}},
         {'/', {3, Associates::left_to_right}},
+        {'%', {3, Associates::left_to_right}},
         {'+', {2, Associates::left_to_right}},
         {'-', {2, Associates::left_to_right}}};
 

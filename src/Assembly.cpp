@@ -123,7 +123,7 @@ namespace assembly
                     dataSection += "\tsum" + std::to_string(++count) + " DQ 0\n";
                     sumVariables.push_back("[sum" + std::to_string(count) + "]");
 
-                    textSection += "\t" + operatorMap.at(node->data.value) + " [sum" + std::to_string(count) + "], " + node->leftNode->data.value + ", [sum" + std::to_string(count) + "]\n";
+                    textSection += "\t" + operatorMap.at(node->data.value) + " " + node->leftNode->data.value + ", [sum" + std::to_string(count - 1) + "], [sum" + std::to_string(count) + "]\n";
                 }
             }
 
