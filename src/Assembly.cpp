@@ -12,7 +12,15 @@ namespace assembly
 
     void Assembly::createAssembly(const std::vector<tree::Tree *> trees)
     {
-        fileContents = includeFunctions + globals;
+        fileContents = includeFunctions + NEW_LINE + NEW_LINE;
+        fileContents += GLOB_MAIN;
+        fileContents += EXT_PRINT + NEW_LINE + NEW_LINE;
+
+        textSection += NEW_LINE + MAIN + NEW_LINE;
+
+#if defined(RELATIVE_ADDRESSING)
+        fileContents += RELATIVE_ADDRESSING;
+#endif
 
         for (auto &&tree : trees)
         {
@@ -20,7 +28,8 @@ namespace assembly
             traverseTree(tree->root);
         }
 
-        fileContents += dataSection + integerFormat + floatFormat + textSection;
+        fileContents += dataSection + NEW_LINE;
+        fileContents += integerFormat + floatFormat + NEW_LINE + textSection;
         fileContents += returnFromMain;
 
         fhandler::FileHandler::writeFile(fhandler::FileHandler::asmfilename, fileContents);
@@ -36,10 +45,10 @@ namespace assembly
         //  rm ./tests/testfile.o
         //  ./tests/testfile
 
-        std::string _nasm = "nasm " + fhandler::FileHandler::asmfilename + " -f elf64";
+        std::string _nasm = NASM_FLAGS + fhandler::FileHandler::asmfilename;
         system(_nasm.c_str());
 
-        std::string _linker = "gcc -no-pie -Wall -Wextra -Werror -o " + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.')) + " " + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.')) + ".o";
+        std::string _linker = GCC_FLAGS + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.')) + " " + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.')) + ".o";
         system(_linker.c_str());
 
         // nasm examples/testfile.asm -f elf64 && gcc -no-pie -Wall -Wextra -Werror -o examples/testfile examples/testfile.o && ./examples/testfile
@@ -72,9 +81,15 @@ namespace assembly
             if (node->data.value == "print")
             {
                 if (hasDivisor)
-                    textSection += "\tprint_float [sum" + std::to_string(count) + "], floatfmt\n\n";
+                {
+                    // textSection += "\tprint_float [sum" + std::to_string(count) + "], floatfmt\n\n";
+                    printFloat(count);
+                }
                 else
-                    textSection += "\tprint_sum [sum" + std::to_string(count) + "], integerfmt\n\n";
+                {
+                    // textSection += "\tprint_sum [sum" + std::to_string(count) + "], integerfmt\n\n";
+                    printInt(count);
+                }
             }
             break;
 
@@ -195,6 +210,52 @@ namespace assembly
         default:
             break;
         }
+    }
+
+    void Assembly::printInt(const int count)
+    {
+#if defined(RELATIVE_ADDRESSING)
+        textSection += "\tmov rsi, [rel sum" + std::to_string(count) + "]\n";
+        textSection += "\tlea rdi, integerfmt\n";
+        textSection += "\txor rax,            rax\n";
+        textSection += "\tcall _printf\n";
+        textSection += "\txor rdi,            rdi\n";
+#else
+        textSection += "\tmov rsi, [sum" + std::to_string(count) + "]\n";
+        textSection += "\tmov rdi, integerfmt\n";
+        textSection += "\txor rax,            rax\n";
+        textSection += "\tcall _printf\n";
+        textSection += "\txor rdi,            rdi\n";
+#endif
+        textSection += "\n";
+    }
+
+    void Assembly::printFloat(const int count)
+    {
+#if defined(RELATIVE_ADDRESSING)
+        textSection += "\tmovq xmm0, [rel sum" + std::to_string(count) + "]\n";
+
+        textSection += "\tsub rsp, 8\n";
+        textSection += "\tlea rdi, floatfmt\n";
+        textSection += "\tmov rax, 1\n";
+        textSection += "\tcall _printf\n";
+        textSection += "\tadd rsp, 8\n";
+
+        textSection += "\txor eax, eax\n";
+        textSection += "\txor edi, edi\n";
+#else
+        textSection += "\tmovq xmm0, [sum" + std::to_string(count) + "]\n";
+
+        textSection += "\tsub rsp, 8\n";
+        textSection += "\tmov rdi, floatfmt\n";
+        textSection += "\tmov rax, 1\n";
+        textSection += "\tcall _printf\n";
+        textSection += "\tadd rsp, 8\n";
+
+        textSection += "\txor eax, eax\n";
+        textSection += "\txor edi, edi\n";
+#endif
+        textSection += "\n";
     }
 
 } // namespace assembly

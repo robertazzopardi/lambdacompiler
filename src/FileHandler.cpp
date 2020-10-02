@@ -66,7 +66,6 @@ namespace fhandler
 
     void FileHandler::writeFile(const std::string filePath, std::string data)
     {
-
         std::ofstream myfile(filePath);
         if (myfile.is_open())
         {
@@ -148,7 +147,7 @@ namespace fhandler
             {
                 if (i.first == "-run")
                 {
-                    i.second.command = "./" + fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.'));
+                    i.second.command = fhandler::FileHandler::filename.substr(0, fhandler::FileHandler::filename.find('.'));
                 }
             }
         }

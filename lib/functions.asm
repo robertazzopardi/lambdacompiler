@@ -55,27 +55,27 @@ _exit:
 %endmacro
 
 ; PRINT INTEGERS
-%macro print_sum 2
-    mov rsi,            %1
-    mov rdi,            %2
-    xor rax,            rax
-    call printf
-    xor rdi,            rdi
-%endmacro
+; %macro print_sum 2
+;     mov rsi,            %1
+;     mov rdi,            %2
+;     xor rax,            rax
+;     call _printf
+;     xor rdi,            rdi
+; %endmacro
 
-; PRINT FLOATS
-%macro print_float 2
-    movq xmm0, %1
+; ; PRINT FLOATS
+; %macro print_float 2
+;     movq xmm0, %1
 
-    sub rsp, 8 ; align stack for print_float
-    mov rdi, %2
-    mov rax, 1
-    call printf
-    add rsp, 8 ; Clean up stack
+;     sub rsp, 8 ; align stack for print_float
+;     mov rdi, %2
+;     mov rax, 1
+;     call _printf
+;     add rsp, 8 ; Clean up stack
 
-    xor eax, eax
-    xor edi, edi
-%endmacro
+;     xor eax, eax
+;     xor edi, edi
+; %endmacro
 
 ; FIND THE REMAINDER
 %macro _mod 3
