@@ -63,6 +63,8 @@ namespace assembly
         size_t count = 0;
         std::vector<std::string> sumVariables;
 
+        int stackOffset = 0;
+
         const std::string NEW_LINE = "\n";
         const std::string TAB = "\t";
         const std::string includeFunctions = "%include '" + std::string(fhandler::_currentPath()) + "lib/functions.asm'";

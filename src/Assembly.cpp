@@ -216,9 +216,11 @@ namespace assembly
     {
 #if defined(RELATIVE_ADDRESSING)
         textSection += "\tmov rsi, [rel sum" + std::to_string(count) + "]\n";
+        textSection += "\tsub rsp, 8\n";
         textSection += "\tlea rdi, integerfmt\n";
         textSection += "\txor rax,            rax\n";
         textSection += "\tcall _printf\n";
+        textSection += "\tadd rsp, 8\n";
         textSection += "\txor rdi,            rdi\n";
 #else
         textSection += "\tmov rsi, [sum" + std::to_string(count) + "]\n";
@@ -234,13 +236,11 @@ namespace assembly
     {
 #if defined(RELATIVE_ADDRESSING)
         textSection += "\tmovq xmm0, [rel sum" + std::to_string(count) + "]\n";
-
         textSection += "\tsub rsp, 8\n";
         textSection += "\tlea rdi, floatfmt\n";
         textSection += "\tmov rax, 1\n";
         textSection += "\tcall _printf\n";
         textSection += "\tadd rsp, 8\n";
-
         textSection += "\txor eax, eax\n";
         textSection += "\txor edi, edi\n";
 #else

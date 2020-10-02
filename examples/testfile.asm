@@ -21,9 +21,11 @@ _main:
 
 	_add 1, 2, [sum1]
 	mov rsi, [rel sum1]
+	sub rsp, 8
 	lea rdi, integerfmt
 	xor rax,            rax
 	call _printf
+	add rsp, 8
 	xor rdi,            rdi
 
 	_div 1, 3, [sum2]
@@ -38,20 +40,24 @@ _main:
 
 	_add 1, 2, [sum3]
 	mov rsi, [rel sum3]
+	sub rsp, 8
 	lea rdi, integerfmt
 	xor rax,            rax
 	call _printf
+	add rsp, 8
 	xor rdi,            rdi
 
-	; _mod 7, 8, [sum4]
-	; mov r8, 2
-	; mov r9, [sum4]
- 	; call _ipow
-	; mov [sum4], rax
-	; mov rsi, [rel sum4]
-	; lea rdi, integerfmt
-	; xor rax,            rax
-	; call _printf
-	; xor rdi,            rdi
+	_mod 7, 8, [sum4]
+	mov r8, 2
+	mov r9, [sum4]
+ 	call _ipow
+	mov [sum4], rax
+	mov rsi, [rel sum4]
+	sub rsp, 8
+	lea rdi, integerfmt
+	xor rax,            rax
+	call _printf
+	add rsp, 8
+	xor rdi,            rdi
 
 	ret
