@@ -116,7 +116,7 @@ namespace assembly
             }
             else
             {
-                if (node->parentNode)
+                if (node->parentNode != nullptr)
                 {
                     textSection += "\t" + opmapsigned.at(node->parentNode->data.value) + "\t\t\trcx,\trax\n";
                 }
@@ -396,7 +396,7 @@ namespace assembly
 
     void Assembly::printFloat(const int count)
     {
-        textSection += "\tmovq\t\txmm0,\trcx\n";
+        // textSection += "\tmovq\t\txmm0,\trcx\n";
         textSection += "\tsub\t\t\trsp,\t8\n";
         if (RIP_ADDRESS)
             textSection += "\tlea\t\t\trdi,\tfloatfmt\n";

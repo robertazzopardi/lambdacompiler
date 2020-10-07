@@ -41,7 +41,7 @@ namespace tree
         template <class T>
         void deleteTree(node::Node<T> *node)
         {
-            if (node == NULL)
+            if (node == nullptr)
                 return;
 
             /* first delete both subtrees */

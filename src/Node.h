@@ -13,24 +13,25 @@ namespace node
 
         Node()
         {
-            leftNode = rightNode = parentNode = nullptr;
+            this->leftNode = nullptr;
+            this->rightNode = nullptr;
+            this->parentNode = nullptr;
         };
 
         Node(T value)
         {
             this->data = value;
-            this->leftNode = this->rightNode = nullptr;
+            this->leftNode = nullptr;
+            this->rightNode = nullptr;
+            this->parentNode = nullptr;
         };
 
-        // Node(T func, Node *left)
-        // {
-        //     this->data = func;
-        //     this->leftNode = left;
-        // }
         Node(T func, Node *right)
         {
             this->data = func;
             this->rightNode = right;
+            this->leftNode = nullptr;
+            this->parentNode = nullptr;
         }
 
         Node(T op, Node *left, Node *right)
@@ -38,12 +39,17 @@ namespace node
             this->data = op;
             this->leftNode = left;
             this->rightNode = right;
+            this->parentNode = nullptr;
         };
 
         ~Node()
         {
-            delete leftNode, rightNode, parentNode;
-            leftNode = rightNode = parentNode = nullptr;
+            delete leftNode;
+            delete rightNode;
+            delete parentNode;
+            leftNode = nullptr;
+            rightNode = nullptr;
+            parentNode = nullptr;
         };
     };
 } // namespace node

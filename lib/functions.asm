@@ -9,50 +9,50 @@
 
 ; ------------------------------------------------------------------------------
 ; EXIT PROGRAM
-_exit:
-  mov        rax, sys_exit
-  mov        rdi, success
-  syscall
+; _exit:
+;   mov        rax, sys_exit
+;   mov        rdi, success
+;   syscall
 
-; ADD INTEGERS
-%macro _add 3
-  mov        rax,            %1
-  mov        rbx,            %2
-  add        rax,            rbx
-  mov        %3,             rax
-  mov        rax,            0
-%endmacro
+; ; ADD INTEGERS
+; %macro _add 3
+;   mov        rax,            %1
+;   mov        rbx,            %2
+;   add        rax,            rbx
+;   mov        %3,             rax
+;   mov        rax,            0
+; %endmacro
 
-; ADD FLOATS
+; ; ADD FLOATS
 
 
-; SUB INTEGERS
-%macro _sub 3
-  mov        rax, %1
-  mov        rbx, %2
-  sub        rax, rbx
-  mov        %3, rax
-  mov        rax, 0
-%endmacro
+; ; SUB INTEGERS
+; %macro _sub 3
+;   mov        rax, %1
+;   mov        rbx, %2
+;   sub        rax, rbx
+;   mov        %3, rax
+;   mov        rax, 0
+; %endmacro
 
-; MULTIPLY INTEGERS
-%macro _mul 3
-  mov        rax, %1
-  mov        rbx, %2
-  mul        rbx
-  mov        %3, rax
-  mov        rax, 0
-%endmacro
+; ; MULTIPLY INTEGERS
+; %macro _mul 3
+;   mov        rax, %1
+;   mov        rbx, %2
+;   mul        rbx
+;   mov        %3, rax
+;   mov        rax, 0
+; %endmacro
 
-; DIVIDE INTEGERS
-%macro _div 3
-  mov        rax, %1
-  mov        rbx, %2
-  movq       xmm0, rax              ; load from memory
-  movq       xmm1, rbx
-  divsd      xmm0, xmm1             ; need to be same type
-  movq       %3, xmm0
-%endmacro
+; ; DIVIDE INTEGERS
+; %macro _div 3
+;   mov        rax, %1
+;   mov        rbx, %2
+;   movq       xmm0, rax              ; load from memory
+;   movq       xmm1, rbx
+;   divsd      xmm0, xmm1             ; need to be same type
+;   movq       %3, xmm0
+; %endmacro
 
 ; PRINT INTEGERS
 ; %macro print_sum 2
@@ -78,14 +78,14 @@ _exit:
 ; %endmacro
 
 ; FIND THE REMAINDER
-%macro _mod 3
-  xor        edx, edx               ; required to print decimal and
-  mov        rax, %1                ; move our first number into eax
-  mov        rbx, %2                ; move our second number into ebx
-  div        rbx                    ; divide eax by ebx
+; %macro _mod 3
+;   xor        edx, edx               ; required to print decimal and
+;   mov        rax, %1                ; move our first number into eax
+;   mov        rbx, %2                ; move our second number into ebx
+;   div        rbx                    ; divide eax by ebx
 
-  mov        %3, rdx
-%endmacro
+;   mov        %3, rdx
+; %endmacro
 
 ; FIND X TO POWER N
 _ipow:

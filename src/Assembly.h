@@ -99,21 +99,21 @@ namespace assembly
             {"-", "sub"},
             {"*", "mul"},
             {"/", "div"},
-            {"^", "_ipow"},
-            {"%", "_mod"}};
+            {"^", "_ipow"}};
 
         const std::map<std::string, std::string> opmapsigned{
+            {"+", "add"},
+            {"-", "sub"},
             {"*", "imul"},
             {"/", "idiv"},
-        };
+            {"^", "_ipow"}};
 
         const std::map<std::string, std::string> opmapsimd{
             {"+", "addsd"},
             {"-", "subsd"},
             {"*", "mulsd"},
             {"/", "divsd"},
-            {"^", "_ipow"},
-            {"%", "_mod"}};
+            {"^", "_ipow"}};
 
         std::map<const char *, bool> reg8byte{
             {"rax", false},

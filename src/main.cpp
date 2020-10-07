@@ -2,7 +2,6 @@
 #include "Parser.h"
 
 // nasm -felf64 simple.asm && ld simple.o && ./a.out
-// /Users/robertazzopardi/_CODE/C++/lambdacompiler/build/lambda_compiler -run -asm /Users/robertazzopardi/_CODE/C++/lambdacompiler/examples/testfile.lambda
 
 int main(int argc, char **argv)
 {

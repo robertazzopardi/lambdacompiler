@@ -10,8 +10,10 @@ namespace tree
 
     Tree::~Tree()
     {
-        delete root, curr;
-        root = curr = nullptr;
+        delete root;
+        delete curr;
+        root = nullptr;
+        curr = nullptr;
     }
 
     void Tree::createLeft()

@@ -43,7 +43,7 @@ namespace parser
 
             tree->setTreeNodeParents(tree->root);
 
-            tree->printPostorder(tree->root);
+            // tree->printPostorder(tree->root);
 
             std::cout << std::endl
                       << std::endl;
