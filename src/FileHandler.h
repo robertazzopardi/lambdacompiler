@@ -24,7 +24,7 @@ namespace fhandler
 {
     const char *_currentPath();
 
-    struct flagArgs
+    struct FlagArgs
     {
         bool isSet;
         std::string command;
@@ -37,7 +37,7 @@ namespace fhandler
         static std::string filename;
         static std::string filepath;
         static std::string asmfilename;
-        static std::map<std::string, flagArgs> flags;
+        static std::map<std::string, FlagArgs> flags;
 
         FileHandler();
         ~FileHandler();

@@ -16,7 +16,7 @@ namespace fhandler
     std::string FileHandler::filepath = "";
     std::string FileHandler::asmfilename = "";
 
-    std::map<std::string, flagArgs> FileHandler::flags = {
+    std::map<std::string, FlagArgs> FileHandler::flags = {
         {"-asm", {false, ""}},
         {"-out", {false, ""}},
         {"-run", {false, ""}}};

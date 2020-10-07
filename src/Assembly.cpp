@@ -18,13 +18,13 @@ namespace assembly
 
         textSection += NEW_LINE + MAIN + NEW_LINE;
 
-#if defined(RELATIVE_ADDRESSING)
-        fileContents += RELATIVE_ADDRESSING;
-#endif
+        if (RIP_ADDRESS)
+            fileContents += RELATIVE_ADDRESSING;
 
         for (auto &&tree : trees)
         {
             hasDivisor = false;
+            firstSum = true;
             traverseTree(tree->root);
         }
 
@@ -57,6 +57,137 @@ namespace assembly
                 system(i.second.command.c_str());
     }
 
+    void Assembly::chooseFunction(const node::Node<lexer::Token> *node)
+    {
+        switch (*node->data.value.c_str())
+        {
+        case '+':
+            textSection += "\tadd\t\t\trax,\trbx\n";
+            break;
+
+        case '-':
+            textSection += "\tsub\t\t\trax,\trbx\n";
+            break;
+
+        case '*':
+            textSection += "\tmul\t\t\trbx\n";
+            break;
+
+        case '/':
+            hasDivisor = true;
+            textSection += "\tcvtsi2sd\txmm0,\trax\n";
+            textSection += "\tcvtsi2sd\txmm1,\trbx\n";
+            textSection += "\tdivsd\t\txmm0,\txmm1\n";
+            break;
+
+        case '^':
+            textSection += "\tmov\t\t\tr8,\trax\n";
+            textSection += "\tmov\t\t\tr9,\trbx\n";
+            textSection += "\tcall\t\t_ipow\n";
+            break;
+
+        case '%':
+            textSection += "\txor\t\t\tedx,\tedx\n";
+            textSection += "\tdiv\t\t\trbx\n";
+            textSection += "\tmov\t\t\trax,\trdx\n";
+            break;
+
+        default:
+            break;
+        }
+    }
+
+    void Assembly::chooseInstruction(const node::Node<lexer::Token> *node)
+    {
+        if (node->leftNode->data.attribute == lexer::Attribute::integer && node->rightNode->data.attribute == lexer::Attribute::integer)
+        {
+            // both
+            textSection += "\tmov\t\t\trax,\t" + node->leftNode->data.value + "\n";
+            textSection += "\tmov\t\t\trbx,\t" + node->rightNode->data.value + "\n";
+            chooseFunction(node);
+
+            if (hasDivisor)
+            {
+            }
+            else if (firstSum)
+            {
+                textSection += "\tmov\t\t\trcx,\trax\n";
+                firstSum = false;
+            }
+            else
+            {
+                if (node->parentNode)
+                {
+                    textSection += "\t" + opmapsigned.at(node->parentNode->data.value) + "\t\t\trcx,\trax\n";
+                }
+                else
+                {
+                    textSection += "\t" + opmapsigned.at(node->data.value) + "\t\t\trcx,\trax\n";
+                }
+            }
+        }
+        else if (node->leftNode->data.attribute == lexer::Attribute::integer && node->rightNode->data.attribute != lexer::Attribute::integer)
+        {
+            if (hasDivisor)
+            {
+                textSection += "\tmov\t\t\trbx,\t" + node->leftNode->data.value + "\n";
+                textSection += "\tcvtsi2sd\t\txmm1,\trbx\n";
+                textSection += "\t" + opmapsimd.at(node->data.value) + "\t\txmm0,\txmm1\n";
+                textSection += "\tmovq\t\t\trcx,\txmm0\n";
+            }
+            else if (firstSum)
+            {
+                textSection += "\tmov\t\t\trax,\t" + node->leftNode->data.value + "\n";
+                textSection += "\tmov\t\t\trbx,\trcx\n";
+                chooseFunction(node);
+
+                textSection += "\tmov\t\t\trcx,\trax\n";
+                firstSum = false;
+            }
+            else
+            {
+                textSection += "\tmov\t\t\trax,\t" + node->leftNode->data.value + "\n";
+                textSection += "\tmov\t\t\trbx,\trcx\n";
+                chooseFunction(node);
+                textSection += "\tmov\t\t\trcx,\trax\n";
+            }
+        }
+        else if (node->leftNode->data.attribute != lexer::Attribute::integer && node->rightNode->data.attribute == lexer::Attribute::integer)
+        {
+            if (hasDivisor)
+            {
+                textSection += "\tmov\t\t\trax,\t" + node->rightNode->data.value + "\n";
+                textSection += "\tcvtsi2sd\txmm1,\trax\n";
+                textSection += "\t" + opmapsimd.at(node->data.value) + "\t\txmm0,\txmm1\n";
+                textSection += "\tmovq\t\trcx,\txmm0\n";
+            }
+            else if (firstSum)
+            {
+                textSection += "\tmov\t\t\trax,\trcx\n";
+                textSection += "\tmov\t\t\trbx,\t" + node->rightNode->data.value + "\n";
+                chooseFunction(node);
+
+                textSection += "\tmov\t\t\trcx,\trax\n";
+                firstSum = false;
+            }
+            else
+            {
+                textSection += "\tmov\t\t\trax,\trcx\n";
+                textSection += "\tmov\t\t\trbx,\t" + node->rightNode->data.value + "\n";
+                chooseFunction(node);
+                textSection += "\tmov\t\t\trcx,\trax\n";
+            }
+        }
+        else if (node->leftNode->data.attribute == lexer::Attribute::op && node->rightNode->data.attribute == lexer::Attribute::op)
+        {
+            std::cout << std::endl;
+        }
+        else
+        {
+            std::cout << std::endl;
+        }
+    }
+
     void Assembly::traverseTree(const node::Node<lexer::Token> *node)
     {
         if (node == nullptr)
@@ -65,146 +196,22 @@ namespace assembly
         traverseTree(node->leftNode);
         traverseTree(node->rightNode);
 
-        // std::cout << node->data.value << " " << std::endl;
-
         switch (node->data.attribute)
         {
-            // case lexer::Attribute::floatpt:
-
-            //     break;
-
-            // case lexer::Attribute::integer:
-
-            //     break;
-
         case lexer::Attribute::func:
             if (node->data.value == "print")
             {
                 if (hasDivisor)
-                {
-                    // textSection += "\tprint_float [sum" + std::to_string(count) + "], floatfmt\n\n";
                     printFloat(count);
-                }
                 else
-                {
-                    // textSection += "\tprint_sum [sum" + std::to_string(count) + "], integerfmt\n\n";
                     printInt(count);
-                }
             }
             break;
 
         case lexer::Attribute::op:
             if (node->data.value == "/")
                 hasDivisor = true;
-            // left node is number
-            // right node is number
-            // else
-            if (node->leftNode->data.attribute == lexer::Attribute::integer && node->rightNode->data.attribute == lexer::Attribute::integer)
-            {
-                if (node->data.value == "^")
-                {
-                    dataSection += "\tsum" + std::to_string(++count) + " DQ 0\n";
-                    sumVariables.push_back("[sum" + std::to_string(count) + "]");
-
-                    textSection += "\tmov r8, " + node->leftNode->data.value + "\n\tmov r9, " + node->rightNode->data.value + "\n";
-                    textSection += "\tcall " + operatorMap.at(node->data.value) + "\n";
-
-                    textSection += "\tmov [sum" + std::to_string(count) + "], rax\n";
-                }
-                else
-                {
-                    dataSection += "\tsum" + std::to_string(++count) + " DQ 0\n";
-                    sumVariables.push_back("[sum" + std::to_string(count) + "]");
-
-                    textSection += "\t" + operatorMap.at(node->data.value) + " " + node->leftNode->data.value + ", " + node->rightNode->data.value + ", [sum" + std::to_string(count) + "]\n";
-                }
-            }
-
-            // left node is number
-            // right node not number
-            else if (node->leftNode->data.attribute == lexer::Attribute::integer && node->rightNode->data.attribute != lexer::Attribute::integer)
-            {
-                if (node->data.value == "^")
-                {
-                    // textSection += "\tmov r8, " + sumVariables[sumVariables.size() - 2] + "\n";
-                    textSection += "\tmov r8, " + node->leftNode->data.value + "\n";
-                    textSection += "\tmov r9, " + sumVariables[sumVariables.size() - 1] + "\n ";
-                    textSection += "\tcall " + operatorMap.at(node->data.value) + "\n";
-
-                    textSection += "\tmov " + sumVariables[sumVariables.size() - 1] + ", rax\n";
-                }
-                else
-                {
-                    dataSection += "\tsum" + std::to_string(++count) + " DQ 0\n";
-                    sumVariables.push_back("[sum" + std::to_string(count) + "]");
-
-                    textSection += "\t" + operatorMap.at(node->data.value) + " " + node->leftNode->data.value + ", [sum" + std::to_string(count - 1) + "], [sum" + std::to_string(count) + "]\n";
-                }
-            }
-
-            // left node not number
-            // right node is number
-            else if (node->leftNode->data.attribute != lexer::Attribute::integer && node->rightNode->data.attribute == lexer::Attribute::integer)
-            {
-                if (node->data.value == "^")
-                {
-                    dataSection += "\tsum" + std::to_string(++count) + " DQ 0\n";
-                    sumVariables.push_back("[sum" + std::to_string(count) + "]");
-
-                    // textSection += "\tmov r8, " + node->leftNode->data.value + "\n\tmov r9, " + node->rightNode->data.value + "\n";
-                    textSection += "\tmov r8, [sum" + std::to_string(count - 1) + "]\n\tmov r9, " + node->rightNode->data.value + "\n";
-                    textSection += "\tcall " + operatorMap.at(node->data.value) + "\n";
-
-                    if (node->parentNode->data.value != "print")
-                    {
-                        // textSection += "\t" + operatorSimpleMap.at(node->parentNode->data.value) + " [sum" + std::to_string(count) + "], rax\n";
-                        textSection += "\t" + operatorMap.at(node->parentNode->data.value) + " [sum" + std::to_string(count) + "], rax, " + "[sum" + std::to_string(count) + "]" + "\n";
-                    }
-                    else
-                    {
-                        textSection += "\tmov [sum" + std::to_string(count) + "], rax\n";
-                    }
-                }
-                else
-                {
-                    dataSection += "\tsum" + std::to_string(++count) + " DQ 0\n";
-                    sumVariables.push_back("[sum" + std::to_string(count) + "]");
-
-                    textSection += "\t" + operatorMap.at(node->data.value) + " [sum" + std::to_string(count - 1) + "], " + node->rightNode->data.value + ", [sum" + std::to_string(count) + "]\n";
-                }
-            }
-
-            // left node is operator
-            // right node is operator
-            else if (node->leftNode->data.attribute == lexer::Attribute::op && node->rightNode->data.attribute == lexer::Attribute::op)
-            {
-                // std::cout << node->data.value << std::endl;
-                // dataSection += "\tsum" + std::to_string(++count) + " DQ 0\n";
-                if (node->data.value == "^")
-                {
-                    textSection += "\tmov r8, " + sumVariables[sumVariables.size() - 2] + "\n";
-                    textSection += "\tmov r9, " + sumVariables[sumVariables.size() - 1] + "\n ";
-                    textSection += "\tcall " + operatorMap.at(node->data.value) + "\n";
-
-                    if (node->parentNode->data.value != "print")
-                    {
-                        // textSection += "\t" + operatorSimpleMap.at(node->parentNode->data.value) + " [sum" + std::to_string(count) + "], rax\n";
-                        textSection += "\t" + operatorMap.at(node->parentNode->data.value) + " [sum" + std::to_string(count) + "], rax, " + "[sum" + std::to_string(count) + "]" + "\n";
-                    }
-                    else
-                    {
-                        textSection += "\tmov [sum" + std::to_string(count) + "], rax\n";
-                    }
-                }
-                else
-                {
-                    textSection += "\t" + operatorMap.at(node->data.value) + " " + sumVariables[sumVariables.size() - 1] + ", " + sumVariables[sumVariables.size() - 2] + ", " + sumVariables[sumVariables.size() - 1] + "\n";
-                }
-            }
-
-            else
-            {
-            }
+            chooseInstruction(node);
             break;
 
         default:
@@ -212,49 +219,194 @@ namespace assembly
         }
     }
 
+    // void Assembly::traverseTree(const node::Node<lexer::Token> *node)
+    // {
+    //     if (node == nullptr)
+    //         return;
+
+    //     traverseTree(node->leftNode);
+    //     traverseTree(node->rightNode);
+
+    //     // std::cout << node->data.value << " " << std::endl;
+
+    //     switch (node->data.attribute)
+    //     {
+    //         // case lexer::Attribute::floatpt:
+    //         //     break;
+    //         // case lexer::Attribute::integer:
+    //         //     break;
+
+    //     case lexer::Attribute::func:
+    //         if (node->data.value == "print")
+    //         {
+    //             if (hasDivisor)
+    //                 printFloat(count);
+    //             else
+    //                 printInt(count);
+    //         }
+    //         break;
+
+    //     case lexer::Attribute::op:
+    //         if (node->data.value == "/")
+    //             hasDivisor = true;
+    //         // left node is number
+    //         // right node is number
+    //         // else
+    //         if (node->leftNode->data.attribute == lexer::Attribute::integer && node->rightNode->data.attribute == lexer::Attribute::integer)
+    //         {
+    //             dataSection += "\tsum" + std::to_string(++count) + " DQ 0\n";
+    //             sumVariables.push_back("[sum" + std::to_string(count) + "]");
+
+    //             if (node->data.value == "^")
+    //             {
+    //                 textSection += "\tmov r8, " + node->leftNode->data.value + "\n";
+
+    //                 textSection += "\tmov r9, " + node->rightNode->data.value + "\n";
+
+    //                 textSection += "\tcall " + operatorMap.at(node->data.value) + "\n";
+
+    //                 textSection += "\tmov " + sumVariables[sumVariables.size() - 1] + ", rax\n";
+    //                 // textSection += "\tmov r8, rax\n";
+    //             }
+    //             else
+    //             {
+    //                 textSection += "\t" + operatorMap.at(node->data.value) + " " + node->leftNode->data.value + ", " + node->rightNode->data.value + ", " + sumVariables[sumVariables.size() - 1] + "\n";
+    //                 // textSection += "\t" + operatorMap.at(node->data.value) + " " + node->leftNode->data.value + ", " + node->rightNode->data.value + ", r8\n";
+    //             }
+    //         }
+
+    //         // left node is number
+    //         // right node not number
+    //         else if (node->leftNode->data.attribute == lexer::Attribute::integer && node->rightNode->data.attribute != lexer::Attribute::integer)
+    //         {
+    //             if (node->data.value == "^")
+    //             {
+
+    //                 textSection += "\tmov r8, " + node->leftNode->data.value + "\n";
+
+    //                 textSection += "\tmov r9, " + sumVariables[sumVariables.size() - 1] + "\n ";
+    //                 // textSection += "\tmov r9, rax\n ";
+
+    //                 textSection += "\tcall " + operatorMap.at(node->data.value) + "\n";
+
+    //                 // textSection += "\tmov hhhh, rax\n";
+    //             }
+    //             else
+    //             {
+    //                 dataSection += "\tsum" + std::to_string(++count) + " DQ 0\n";
+
+    //                 sumVariables.push_back("[sum" + std::to_string(count) + "]");
+
+    //                 textSection += "\t" + operatorMap.at(node->data.value) + " " + node->leftNode->data.value + ", " + sumVariables[sumVariables.size() - 2] + ", " + sumVariables[sumVariables.size() - 1] + "\n";
+    //                 // textSection += "\t" + operatorMap.at(node->data.value) + " " + node->leftNode->data.value + ",  r8, r9\n";
+    //             }
+    //         }
+
+    //         // left node not number
+    //         // right node is number
+    //         else if (node->leftNode->data.attribute != lexer::Attribute::integer && node->rightNode->data.attribute == lexer::Attribute::integer)
+    //         {
+    //             dataSection += "\tsum" + std::to_string(++count) + " DQ 0\n";
+
+    //             sumVariables.push_back("[sum" + std::to_string(count) + "]");
+
+    //             if (node->data.value == "^")
+    //             {
+
+    //                 textSection += "\tmov r8, " + sumVariables[sumVariables.size() - 2] + "\n";
+    //                 // textSection += "\tmov r8, rax\n";
+
+    //                 textSection += "\tmov r9, " + node->rightNode->data.value + "\n";
+
+    //                 textSection += "\tcall " + operatorMap.at(node->data.value) + "\n";
+
+    //                 if (node->parentNode->data.value != "print")
+    //                 {
+    //                     textSection += "\t" + operatorMap.at(node->parentNode->data.value) + " " + sumVariables[sumVariables.size() - 1] + ", rax, " + sumVariables[sumVariables.size() - 1] + "\n";
+    //                     // textSection += "\t" + operatorMap.at(node->parentNode->data.value) + " r8, rax, r8\n";
+    //                 }
+    //                 else
+    //                 {
+    //                     textSection += "\tmov " + sumVariables[sumVariables.size() - 1] + ", rax\n";
+    //                     // textSection += "\tmov r8, rax\n";
+    //                 }
+    //             }
+    //             else
+    //             {
+
+    //                 textSection += "\t" + operatorMap.at(node->data.value) + " " + sumVariables[sumVariables.size() - 2] + ", " + node->rightNode->data.value + ", " + sumVariables[sumVariables.size() - 1] + "\n";
+    //                 // textSection += "\t" + operatorMap.at(node->data.value) + " r8, " + node->rightNode->data.value + ", r9\n";
+    //             }
+    //         }
+
+    //         // left node is operator
+    //         // right node is operator
+    //         else if (node->leftNode->data.attribute == lexer::Attribute::op && node->rightNode->data.attribute == lexer::Attribute::op)
+    //         {
+    //             if (node->data.value == "^")
+    //             {
+    //                 textSection += "\tmov r8, rax\n";
+
+    //                 textSection += "\tmov r9, rax\n ";
+
+    //                 textSection += "\tcall " + operatorMap.at(node->data.value) + "\n";
+
+    //                 if (node->parentNode->data.value != "print")
+    //                 {
+    //                     textSection += "\t" + operatorMap.at(node->parentNode->data.value) + " " + sumVariables[sumVariables.size() - 1] + ", rax, " + sumVariables[sumVariables.size() - 1] + "\n";
+    //                     // textSection += "\t" + operatorMap.at(node->parentNode->data.value) + " r8, rax, r8\n";
+    //                 }
+    //                 else
+    //                 {
+    //                     textSection += "\tmov " + sumVariables[sumVariables.size() - 1] + ", rax\n";
+    //                     // textSection += "\tmov r8, rax\n";
+    //                 }
+    //             }
+    //             else
+    //             {
+    //                 textSection += "\t" + operatorMap.at(node->data.value) + " " + sumVariables[sumVariables.size() - 1] + ", " + sumVariables[sumVariables.size() - 2] + ", " + sumVariables[sumVariables.size() - 1] + "\n";
+    //                 // textSection += "\t" + operatorMap.at(node->data.value) + " r8, r9, rbx\n";
+    //             }
+    //         }
+
+    //         else
+    //         {
+    //         }
+    //         break;
+
+    //     default:
+    //         break;
+    //     }
+    // }
+
     void Assembly::printInt(const int count)
     {
-#if defined(RELATIVE_ADDRESSING)
-        textSection += "\tmov rsi, [rel sum" + std::to_string(count) + "]\n";
-        textSection += "\tsub rsp, 8\n";
-        textSection += "\tlea rdi, integerfmt\n";
-        textSection += "\txor rax,            rax\n";
-        textSection += "\tcall _printf\n";
-        textSection += "\tadd rsp, 8\n";
-        textSection += "\txor rdi,            rdi\n";
-#else
-        textSection += "\tmov rsi, [sum" + std::to_string(count) + "]\n";
-        textSection += "\tmov rdi, integerfmt\n";
-        textSection += "\txor rax,            rax\n";
-        textSection += "\tcall _printf\n";
-        textSection += "\txor rdi,            rdi\n";
-#endif
+        textSection += "\tmov\t\t\trsi,\trcx\n";
+        textSection += "\tsub\t\t\trsp,\t8\n";
+        if (RIP_ADDRESS)
+            textSection += "\tlea\t\t\trdi,\tintegerfmt\n";
+        else
+            textSection += "\tmov\t\t\trdi,\tintegerfmt\n";
+        textSection += "\txor\t\t\trax,\trax\n";
+        textSection += "\tcall\t\t_printf\n";
+        textSection += "\tadd\t\t\trsp,\t8\n";
+        textSection += "\txor\t\t\trdi,\trdi\n";
         textSection += "\n";
     }
 
     void Assembly::printFloat(const int count)
     {
-#if defined(RELATIVE_ADDRESSING)
-        textSection += "\tmovq xmm0, [rel sum" + std::to_string(count) + "]\n";
-        textSection += "\tsub rsp, 8\n";
-        textSection += "\tlea rdi, floatfmt\n";
-        textSection += "\tmov rax, 1\n";
-        textSection += "\tcall _printf\n";
-        textSection += "\tadd rsp, 8\n";
-        textSection += "\txor eax, eax\n";
-        textSection += "\txor edi, edi\n";
-#else
-        textSection += "\tmovq xmm0, [sum" + std::to_string(count) + "]\n";
-
-        textSection += "\tsub rsp, 8\n";
-        textSection += "\tmov rdi, floatfmt\n";
-        textSection += "\tmov rax, 1\n";
-        textSection += "\tcall _printf\n";
-        textSection += "\tadd rsp, 8\n";
-
-        textSection += "\txor eax, eax\n";
-        textSection += "\txor edi, edi\n";
-#endif
+        textSection += "\tmovq\t\txmm0,\trcx\n";
+        textSection += "\tsub\t\t\trsp,\t8\n";
+        if (RIP_ADDRESS)
+            textSection += "\tlea\t\t\trdi,\tfloatfmt\n";
+        else
+            textSection += "\tmov\t\t\trdi,\tfloatfmt\n";
+        textSection += "\tmov\t\t\trax,\t1\n";
+        textSection += "\tcall\t\t_printf\n";
+        textSection += "\tadd\t\t\trsp,\t8\n";
+        textSection += "\txor\t\t\teax,\teax\n";
+        textSection += "\txor\t\t\tedi,\tedi\n";
         textSection += "\n";
     }
 
