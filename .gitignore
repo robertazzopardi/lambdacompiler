@@ -60,8 +60,9 @@
 bin/
 build/
 data/
-
 examples/*.o
+examples/testfile
+
 
 # cmake
 
