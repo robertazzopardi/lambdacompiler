@@ -33,9 +33,7 @@ namespace parser
         // returns a node with the post fix representation of the expression
         node::Node<lexer::Token> *shuntingYardPostFix(std::vector<lexer::Token> line);
 
-        // parses the tokens using the shunting yard algorithm
-        // returns a node with the pre fix representation of the expression
-        // void shuntingYardPreFix(std::vector<std::string> line, tr::Tree *tree);
+        void addRemainingOperators(stack::stack<lexer::Token> &operator_stack, stack::stack<node::Node<lexer::Token> *> &output_stack);
     };
 } // namespace parser
 

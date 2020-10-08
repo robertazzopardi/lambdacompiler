@@ -10,10 +10,6 @@
 
 namespace lexer
 {
-    // const char ADD = '+';
-    // const char SUB = '-';
-    // const char MULT = '*';
-    // const char DIV = '/';
     static const char LB = '(';
     static const char RB = ')';
     static const char EX = '^';
@@ -28,23 +24,10 @@ namespace lexer
         floatpt,
         lparen,
         rparen,
-        // opadd,
-        // opsub,
-        // opmul,
-        // opdiv,
         op,
         // print
         func
     };
-
-    // static std::map<Attribute, std::string> attribute{
-    //     {Attribute::integer, "int"},
-    //     {Attribute::lparen, "("},
-    //     {Attribute::rparen, ")"},
-    //     {Attribute::opadd, "+"},
-    //     {Attribute::opsub, "-"},
-    //     {Attribute::opmul, "*"},
-    //     {Attribute::opdiv, "/"}};
 
     enum class Associates
     {
@@ -59,12 +42,6 @@ namespace lexer
         Associates associates;
     };
 
-    // static std::map<std::string, info> operators{
-    //     {"^", {4, Associates::right_to_left}},
-    //     {"*", {3, Associates::left_to_right}},
-    //     {"/", {3, Associates::left_to_right}},
-    //     {"+", {2, Associates::left_to_right}},
-    //     {"-", {2, Associates::left_to_right}}};
     static std::map<const char, info> operators{
         {'^', {4, Associates::right_to_left}},
         {'*', {3, Associates::left_to_right}},
@@ -73,17 +50,10 @@ namespace lexer
         {'+', {2, Associates::left_to_right}},
         {'-', {2, Associates::left_to_right}}};
 
-    // template <typename T>
     struct Token
     {
         Attribute attribute;
         std::string value;
-        // char *value;
-
-        // friend std::ostream &operator<<(std::ostream &os, const Token &m)
-        // {
-        //     return os << m.value;
-        // }
     };
 
     class Lexer
@@ -93,28 +63,17 @@ namespace lexer
         Lexer();
         ~Lexer();
 
-        // static bool isOperator(const std::string val);
         static bool isOperator(const char val);
-
-        // static bool isOperator(char val);
-
         static bool isBracket(const char &val);
-
         static bool isLeftBracket(const char &val);
-
         static bool isRightBracket(const char &val);
-
         static bool isInteger(const std::string &s);
-
         static bool isFunction(const std::string value);
-
-        // static bool isInt(const std::string s);
-
         // split line at spaces
         static std::vector<std::string> split(std::string line);
-
         // seperates a string into its token components
         static std::vector<Token> lex(const std::string str);
+        static void addNumber(std::string &numberPlaceholder, std::vector<Token> &tokens);
     };
 
 } // namespace lexer

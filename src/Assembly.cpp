@@ -140,7 +140,6 @@ namespace assembly
                 textSection += "\tmov\t\t\trax,\t" + node->leftNode->data.value + "\n";
                 textSection += "\tmov\t\t\trbx,\trcx\n";
                 chooseFunction(node);
-
                 textSection += "\tmov\t\t\trcx,\trax\n";
                 firstSum = false;
             }
@@ -166,7 +165,6 @@ namespace assembly
                 textSection += "\tmov\t\t\trax,\trcx\n";
                 textSection += "\tmov\t\t\trbx,\t" + node->rightNode->data.value + "\n";
                 chooseFunction(node);
-
                 textSection += "\tmov\t\t\trcx,\trax\n";
                 firstSum = false;
             }
