@@ -50,10 +50,10 @@ namespace fhandler
         {
             while (std::getline(file, line)) // move to the lexer function
             {
-                auto b = line.substr(0, line.find("//"));
+                auto b = trim(line.substr(0, line.find("//")));
 
                 if (b != "")
-                    lines.push_back(trim(b));
+                    lines.push_back(b);
             }
         }
         else

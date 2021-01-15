@@ -2,7 +2,6 @@
 
 namespace lexer
 {
-
     Lexer::Lexer()
     {
     }
@@ -118,6 +117,22 @@ namespace lexer
             }
             else if (isOperator(c))
             {
+                // handles negative numbers
+                // if (numberPlaceholder == "" && (tokens[tokens.size() - 1].attribute != lexer::Attribute::integer || tokens[tokens.size() - 1].attribute != lexer::Attribute::integer))
+                if (numberPlaceholder == "" && c == '-' && (tokens[tokens.size() - 1].attribute != lexer::Attribute::integer || tokens[tokens.size() - 1].attribute != lexer::Attribute::integer))
+                {
+                    // if (c != '^')
+                    // if (c == '-')
+                    // {
+                    numberPlaceholder += c;
+                    // }
+                    // else
+                    // {
+                    //     tokens.push_back({Attribute::op, std::string(1, c)});
+                    // }
+                    continue;
+                }
+
                 addNumber(numberPlaceholder, tokens);
 
                 if (funcPlaceholder != "")
@@ -152,6 +167,12 @@ namespace lexer
 
         // one final time, for remaining items in the number buffer
         addNumber(numberPlaceholder, tokens);
+
+        for (auto &&i : tokens)
+        {
+            std::cout << i.value << " ";
+        }
+        std::cout << std::endl;
 
         return tokens;
     }

@@ -65,12 +65,11 @@ namespace assembly
     class Assembly
     {
     private:
-        stack::stack<std::map<const char *, bool>> registers{};
+        stack::stack<std::string> registers{};
 
         bool hasDivisor = false;
         bool firstSum = true;
         std::string fileContents;
-        size_t count = 0;
         std::vector<std::string> sumVariables;
 
         std::string currentSum;
@@ -141,8 +140,8 @@ namespace assembly
         void buildSystemCommands();
         void traverseTree(const node::Node<lexer::Token> *node);
 
-        void printInt(const int count);
-        void printFloat(const int count);
+        void printInt();
+        void printFloat();
 
         void chooseInstruction(const node::Node<lexer::Token> *node);
         void chooseFunction(const node::Node<lexer::Token> *node);

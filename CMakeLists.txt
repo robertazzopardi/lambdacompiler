@@ -1,5 +1,4 @@
-
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 2.8.12...3.13)
 project(lambda_compiler VERSION 0.1.0)
 
 # include(CTest)
@@ -48,6 +47,3 @@ add_executable(lambda_compiler ${SOURCES})
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
-
-
-
